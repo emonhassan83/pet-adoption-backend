@@ -1,13 +1,12 @@
 import { Server } from "http";
 import app from "./app";
-
-const PORT = process.env.PORT || 5000;
+import config from "./config";
 
 let server: Server;
 
-function main() {
-  server = app.listen(PORT, () => {
-    console.log(`Server is ready at http://localhost:${PORT}`);
+async function main() {
+  server = app.listen(config.port, () => {
+    console.log(`Pet Adoption server is ready at http://localhost:${config.port}`);
   });
 }
 
