@@ -13,4 +13,17 @@ router.post(
     adoptionRequestController.createAdoptionRequest
   );
 
+router.get(
+    '/',
+    auth(),
+    adoptionRequestController.getAllAdoptionRequest
+  );
+
+router.put(
+    '/:requestId',
+    auth(),
+    validateRequest(adoptionRequestSchema.updateAdoptionRequest),
+    adoptionRequestController.updateAAdoptionRequest
+  );
+
 export const adoptionRequestRoutes = router;
