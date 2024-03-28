@@ -14,18 +14,19 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              String            @id @default(uuid())
+  name            String
+  email           String            @unique
+  password        String
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  adoptionRequest AdoptionRequest[]
 
   @@map("users")
 }
 
 model Pet {
-  id                   String   @id @default(uuid())
+  id                   String            @id @default(uuid())
   name                 String
   species              String
   breed                String
@@ -36,8 +37,31 @@ model Pet {
   temperament          String
   medicalHistory       String
   adoptionRequirements String
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  adoptionRequest      AdoptionRequest[]
 
   @@map("pets")
+}
+
+model AdoptionRequest {
+  id                     String        @id @default(uuid())
+  userId                 String
+  petId                  String
+  status                 RequestStatus @default(PENDING)
+  petOwnershipExperience String
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  //* Define relationships
+  user User @relation(fields: [userId], references: [id])
+  pet  Pet  @relation(fields: [petId], references: [id])
+
+  @@map("adoptionrequests")
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
 }
