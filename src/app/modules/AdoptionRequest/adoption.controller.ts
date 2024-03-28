@@ -2,19 +2,12 @@ import httpStatus from "http-status";
 import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { adoptionRequestService } from "./adoption.service";
-import { Request as ExpressRequest } from "express";
-import { IUser } from "../../interfaces";
+import { RequestWithUser } from "../../interfaces";
 
-interface RequestWithUser extends ExpressRequest {
-  user?: IUser | undefined;
-}
-
-const createAdoptionRequest = catchAsync(async (req: RequestWithUser, res) => {
-  if (!req.user) {
-    throw new Error("This user is not authenticated");
-  }
+const createAdoptionRequest = catchAsync(async (req, res) => {
+  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.createAdoptionRequestIntoDB(
-    req.user,
+    user,
     req.body
   );
 
@@ -26,12 +19,10 @@ const createAdoptionRequest = catchAsync(async (req: RequestWithUser, res) => {
   });
 });
 
-const getAllAdoptionRequest = catchAsync(async (req: RequestWithUser, res) => {
-  if (!req.user) {
-    throw new Error("This user is not authenticated");
-  }
+const getAllAdoptionRequest = catchAsync(async (req, res) => {
+  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.getAllAdoptionRequestFromDB(
-    req.user
+    user
   );
 
   sendResponse(res, {
@@ -42,16 +33,14 @@ const getAllAdoptionRequest = catchAsync(async (req: RequestWithUser, res) => {
   });
 });
 
-const updateAAdoptionRequest = catchAsync(async (req: RequestWithUser, res) => {
+const updateAAdoptionRequest = catchAsync(async (req, res) => {
   const { requestId } = req.params;
 
-  if (!req.user) {
-    throw new Error("This user is not authenticated");
-  }
+  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.updateAdoptionRequestIntoDB(
     requestId,
     req.body,
-    req.user
+    user
   );
 
   sendResponse(res, {

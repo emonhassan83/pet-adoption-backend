@@ -1,10 +1,16 @@
 import { Pet, Prisma } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helpers/paginationHelper";
-import { IPaginationOptions } from "../../interfaces";
+import { IPaginationOptions, IPet, IUser } from "../../interfaces";
 import { petSearchAbleFields } from "./pet.constant";
 
-const createPetIntoDB = async (petData: any): Promise<Pet> => {
+const createPetIntoDB = async (userData: IUser, petData: IPet): Promise<Pet> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.userId,
+    },
+  });
+
   const result = await prisma.pet.create({
     data: petData,
   });
@@ -71,9 +77,16 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
 };
 
 const updateIntoDB = async (
+  userData: IUser,
   petId: string,
   data: Partial<Pet>
 ): Promise<Pet> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.userId,
+    },
+  });
+  
   await prisma.pet.findUniqueOrThrow({
     where: {
       id: petId,

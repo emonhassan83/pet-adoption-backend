@@ -4,19 +4,20 @@ import { Secret } from "jsonwebtoken";
 import httpStatus from "http-status";
 import { jwtHelpers } from "../../helpers/jwtHelpers";
 import ApiError from "../errors/ApiErrors";
+import { IUser } from "../interfaces";
 
 const auth = (...roles: string[]) => {
-    return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
+    return async (req: Request & { user?: IUser }, res: Response, next: NextFunction) => {
         try {
             const token = req.headers.authorization
 
             if (!token) {
-                throw new ApiError(httpStatus.UNAUTHORIZED, "You are not authorized!")
+                throw new ApiError(httpStatus.UNAUTHORIZED, "Unauthorized Access!")
             }
 
             const verifiedUser = jwtHelpers.verifyToken(token, config.jwt.jwt_secret as Secret)
 
-            req.user = verifiedUser;
+            req.user = verifiedUser  as IUser;
             
             if (roles.length && !roles.includes(verifiedUser.role)) {
                 throw new ApiError(httpStatus.FORBIDDEN, "Forbidden!")

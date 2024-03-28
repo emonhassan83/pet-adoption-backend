@@ -4,12 +4,7 @@ import sendResponse from "../../../shared/sendResponse";
 import { userService } from "./user.service";
 import pick from "../../../shared/pick";
 import { userFilterableFields } from "./user.constant";
-import { Request as ExpressRequest } from "express";
-import { IUser } from "../../interfaces";
-
-interface RequestWithUser extends ExpressRequest {
-  user?: IUser | undefined;
-}
+import { RequestWithUser } from "../../interfaces";
 
 const createUser = catchAsync(async (req, res) => {
   const result = await userService.createUser(req);
@@ -36,11 +31,9 @@ const getAllFromDB = catchAsync(async (req, res) => {
   });
 });
 
-const getMyProfile = catchAsync(async (req: RequestWithUser, res) => {
-  if (!req.user) {
-    throw new Error("This user is not authenticated");
-  }
-  const result = await userService.getMyProfileFromDB(req?.user);
+const getMyProfile = catchAsync(async (req, res) => {
+  const user = (req as RequestWithUser)?.user;
+  const result = await userService.getMyProfileFromDB(user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -50,11 +43,9 @@ const getMyProfile = catchAsync(async (req: RequestWithUser, res) => {
   });
 });
 
-const updateMyProfile = catchAsync(async (req: RequestWithUser, res) => {
-  if (!req.user) {
-    throw new Error("This user is not authenticated");
-  }
-  const result = await userService.updateProfileIntoDB(req.user, req.body);
+const updateMyProfile = catchAsync(async (req, res) => {
+  const user = (req as RequestWithUser)?.user;
+  const result = await userService.updateProfileIntoDB(user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

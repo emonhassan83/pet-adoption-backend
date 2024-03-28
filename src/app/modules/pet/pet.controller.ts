@@ -4,9 +4,11 @@ import sendResponse from "../../../shared/sendResponse";
 import { PetService } from "./pet.service";
 import pick from "../../../shared/pick";
 import { petSearchAbleFields } from "./pet.constant";
+import { RequestWithUser } from "../../interfaces";
 
 const createPet = catchAsync(async (req, res) => {
-  const result = await PetService.createPetIntoDB(req.body);
+  const user = (req as RequestWithUser)?.user;
+  const result = await PetService.createPetIntoDB(user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -33,7 +35,8 @@ const getAllPets = catchAsync(async (req, res) => {
 
   const updateAPet = catchAsync(async (req, res) => {
     const { petId } = req.params;
-    const result = await PetService.updateIntoDB(petId, req.body);
+    const user = (req as RequestWithUser)?.user;
+    const result = await PetService.updateIntoDB(user, petId, req.body);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,

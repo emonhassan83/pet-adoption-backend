@@ -1,10 +1,10 @@
 import { AdoptionRequest } from "@prisma/client";
 import prisma from "../../../shared/prisma";
-import { IUser } from "../../interfaces";
+import { IAdoptionRequest, IUser } from "../../interfaces";
 
 const createAdoptionRequestIntoDB = async (
   userData: IUser,
-  data: any
+  data: IAdoptionRequest
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
@@ -31,7 +31,11 @@ const createAdoptionRequestIntoDB = async (
 };
 
 const getAllAdoptionRequestFromDB = async (userData: IUser) => {
-  console.log(userData);
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.userId,
+    },
+  });
   
   const result = await prisma.adoptionRequest.findMany();
 
@@ -40,7 +44,7 @@ const getAllAdoptionRequestFromDB = async (userData: IUser) => {
 
 const updateAdoptionRequestIntoDB = async (
   requestId: string,
-  data: Partial<any>,
+  data: Partial<AdoptionRequest>,
   userData: IUser
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
