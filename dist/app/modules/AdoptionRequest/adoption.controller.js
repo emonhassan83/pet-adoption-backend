@@ -18,10 +18,8 @@ const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const adoption_service_1 = require("./adoption.service");
 const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.user) {
-        throw new Error("This user is not authenticated");
-    }
-    const result = yield adoption_service_1.adoptionRequestService.createAdoptionRequestIntoDB(req.user, req.body);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.createAdoptionRequestIntoDB(user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -30,10 +28,8 @@ const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
     });
 }));
 const getAllAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.user) {
-        throw new Error("This user is not authenticated");
-    }
-    const result = yield adoption_service_1.adoptionRequestService.getAllAdoptionRequestFromDB(req.user);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.getAllAdoptionRequestFromDB(user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -43,10 +39,8 @@ const getAllAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
 }));
 const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
-    if (!req.user) {
-        throw new Error("This user is not authenticated");
-    }
-    const result = yield adoption_service_1.adoptionRequestService.updateAdoptionRequestIntoDB(requestId, req.body, req.user);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.updateAdoptionRequestIntoDB(requestId, req.body, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

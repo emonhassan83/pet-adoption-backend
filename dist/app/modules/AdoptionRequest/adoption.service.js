@@ -32,7 +32,11 @@ const createAdoptionRequestIntoDB = (userData, data) => __awaiter(void 0, void 0
     return result;
 });
 const getAllAdoptionRequestFromDB = (userData) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(userData);
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userData === null || userData === void 0 ? void 0 : userData.userId,
+        },
+    });
     const result = yield prisma_1.default.adoptionRequest.findMany();
     return result;
 });

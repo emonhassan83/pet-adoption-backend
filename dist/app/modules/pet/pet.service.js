@@ -27,7 +27,12 @@ exports.PetService = void 0;
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
 const pet_constant_1 = require("./pet.constant");
-const createPetIntoDB = (petData) => __awaiter(void 0, void 0, void 0, function* () {
+const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userData === null || userData === void 0 ? void 0 : userData.userId,
+        },
+    });
     const result = yield prisma_1.default.pet.create({
         data: petData,
     });
@@ -81,7 +86,12 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         data: result,
     };
 });
-const updateIntoDB = (petId, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userData === null || userData === void 0 ? void 0 : userData.userId,
+        },
+    });
     yield prisma_1.default.pet.findUniqueOrThrow({
         where: {
             id: petId,

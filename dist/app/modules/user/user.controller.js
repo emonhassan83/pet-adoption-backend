@@ -41,10 +41,8 @@ const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.user) {
-        throw new Error("This user is not authenticated");
-    }
-    const result = yield user_service_1.userService.getMyProfileFromDB(req === null || req === void 0 ? void 0 : req.user);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield user_service_1.userService.getMyProfileFromDB(user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -53,10 +51,8 @@ const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    if (!req.user) {
-        throw new Error("This user is not authenticated");
-    }
-    const result = yield user_service_1.userService.updateProfileIntoDB(req.user, req.body);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield user_service_1.userService.updateProfileIntoDB(user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

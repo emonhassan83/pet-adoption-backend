@@ -20,7 +20,8 @@ const pet_service_1 = require("./pet.service");
 const pick_1 = __importDefault(require("../../../shared/pick"));
 const pet_constant_1 = require("./pet.constant");
 const createPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield pet_service_1.PetService.createPetIntoDB(req.body);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield pet_service_1.PetService.createPetIntoDB(user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -42,7 +43,8 @@ const getAllPets = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
 }));
 const updateAPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { petId } = req.params;
-    const result = yield pet_service_1.PetService.updateIntoDB(petId, req.body);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield pet_service_1.PetService.updateIntoDB(user, petId, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

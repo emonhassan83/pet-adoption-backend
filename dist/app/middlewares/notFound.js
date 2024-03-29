@@ -7,7 +7,7 @@ const http_status_1 = __importDefault(require("http-status"));
 const notFound = (req, res, next) => {
     return res.status(http_status_1.default.NOT_FOUND).json({
         success: false,
-        message: 'API Not Found!!!',
+        message: 'API Not Found!',
         error: {
             path: req.originalUrl,
             message: "Your requested path is not found!"
