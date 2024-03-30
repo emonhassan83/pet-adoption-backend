@@ -18,7 +18,7 @@ const createPet = catchAsync(async (req, res) => {
   });
 });
 
-const getAllPets = catchAsync(async (req, res) => {
+const getAllPets = catchAsync(async (req, res) => {  
     const filters = pick(req.query, petSearchAbleFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   

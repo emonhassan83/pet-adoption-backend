@@ -19,6 +19,7 @@ const createPetIntoDB = async (userData: IUser, petData: IPet): Promise<Pet> => 
 };
 
 const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
+  console.log(params);
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
@@ -48,6 +49,8 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   const whereConditions: Prisma.PetWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
+    // console.dir(whereConditions, {depth: Infinity});
+    
   const result = await prisma.pet.findMany({
     where: whereConditions,
     skip,

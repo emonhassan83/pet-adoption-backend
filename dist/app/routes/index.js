@@ -23,7 +23,7 @@ const moduleRoutes = [
         route: pet_routes_1.petRoutes,
     },
     {
-        path: "/adoption-request",
+        path: "/",
         route: adoption_routes_1.adoptionRequestRoutes,
     },
 ];

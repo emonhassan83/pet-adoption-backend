@@ -13,7 +13,7 @@ router.post(
   petController.createPet
 );
 
-router.get("/", auth(), petController.getAllPets);
+router.get("/", petController.getAllPets);
 
 router.put(
   "/:petId",

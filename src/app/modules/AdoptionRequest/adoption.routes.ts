@@ -7,20 +7,20 @@ import { adoptionRequestSchema } from "./adoption.validation";
 const router = express.Router();
 
 router.post(
-    '/',
+    '/adoption-request',
     auth(),
     validateRequest(adoptionRequestSchema.createAdoptionRequest),
     adoptionRequestController.createAdoptionRequest
   );
 
 router.get(
-    '/',
+    '/adoption-requests',
     auth(),
     adoptionRequestController.getAllAdoptionRequest
   );
 
 router.put(
-    '/:requestId',
+    '/adoption-requests/:requestId',
     auth(),
     validateRequest(adoptionRequestSchema.updateAdoptionRequest),
     adoptionRequestController.updateAAdoptionRequest
