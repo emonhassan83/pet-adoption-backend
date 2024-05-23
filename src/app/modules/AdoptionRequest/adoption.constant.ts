@@ -1,0 +1,1 @@
+export const adoptFilterableFields: string[] = ['status', 'petName', 'userEmail']; //* only for search term
