@@ -16,13 +16,12 @@ router.post(
 
 router.get("/", petController.getAllPets);
 
-router.get("/:petId", auth(UserRole.ADMIN, UserRole.USER), petController.getAllPets);
+router.get("/my-pets", auth(UserRole.ADMIN), petController.getMyPets);
 
-router.post(
-  "/my-pets",
-  auth(UserRole.ADMIN),
-  validateRequest(petValidation.createPet),
-  petController.createPet
+router.get(
+  "/:petId",
+  auth(UserRole.ADMIN, UserRole.USER),
+  petController.getAPet
 );
 
 router.put(

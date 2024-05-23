@@ -70,11 +70,14 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       id: true,
       name: true,
       email: true,
+      profilePhoto: true,
       role: true,
       isDeleted: true,
       status: true,
       createdAt: true,
       updatedAt: true,
+      adoptionRequest: true,
+      pet: true 
     },
   });
 
@@ -104,10 +107,14 @@ const getMyProfileFromDB = async (
       id: true,
       name: true,
       email: true,
+      profilePhoto: true,
       role: true,
+      isDeleted: true,
       status: true,
       createdAt: true,
       updatedAt: true,
+      adoptionRequest: true,
+      pet: true 
     },
   });
 
@@ -136,10 +143,14 @@ const updateProfileIntoDB = async (
       id: true,
       name: true,
       email: true,
+      profilePhoto: true,
       role: true,
+      isDeleted: true,
       status: true,
       createdAt: true,
       updatedAt: true,
+      adoptionRequest: true,
+      pet: true,
     },
   });
 
@@ -160,6 +171,19 @@ const changeUserRole = async (id: string, role: UserRole) => {
       id,
     },
     data: role,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profilePhoto: true,
+      role: true,
+      isDeleted: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      adoptionRequest: true,
+      pet: true,
+    },
   });
 
   return updateUserRole;
@@ -179,6 +203,19 @@ const changeUserStatus = async (id: string, status: UserStatus) => {
       id,
     },
     data: status,
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      profilePhoto: true,
+      role: true,
+      isDeleted: true,
+      status: true,
+      createdAt: true,
+      updatedAt: true,
+      adoptionRequest: true,
+      pet: true,
+    },
   });
 
   return updateUserStatus;

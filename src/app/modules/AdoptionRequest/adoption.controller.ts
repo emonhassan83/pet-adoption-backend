@@ -6,7 +6,6 @@ import { RequestWithUser } from "../../interfaces";
 import pick from "../../../shared/pick";
 import { adoptFilterableFields } from "./adoption.constant";
 
-//!TODO: tasting all routes
 const createAdoptionRequest = catchAsync(async (req, res) => {
   const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.createIntoDB(
@@ -77,9 +76,9 @@ const updateAAdoptionRequest = catchAsync(async (req, res) => {
 });
 
 const deleteAAdoptionRequest = catchAsync(async (req, res) => {
-  const { petId } = req.params;
+  const { requestId } = req.params;
   const user = (req as RequestWithUser)?.user;
-  const result = await adoptionRequestService.deleteIntoDB(user, petId);
+  const result = await adoptionRequestService.deleteIntoDB(user, requestId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

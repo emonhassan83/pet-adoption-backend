@@ -52,17 +52,6 @@ const getAllFromDB = async (
 
   const andConditions: Prisma.AdoptionRequestWhereInput[] = [];
 
-  // if (params.searchTerm) {
-  //   andConditions.push({
-  //     OR: petSearchAbleFields.map((field) => ({
-  //       [field]: {
-  //         contains: params.searchTerm,
-  //         mode: "insensitive",
-  //       },
-  //     })),
-  //   });
-  // }
-
   if (Object.keys(filterData).length > 0) {
     andConditions.push({
       AND: Object.keys(filterData).map((key) => ({
@@ -88,6 +77,10 @@ const getAllFromDB = async (
         : {
             createdAt: "asc",
           },
+    include: {
+      user: true,
+      pet: true,
+    },
   });
 
   const total = await prisma.adoptionRequest.count({
@@ -102,9 +95,6 @@ const getAllFromDB = async (
     },
     data: result,
   };
-
-  // const result = await prisma.adoptionRequest.findMany();
-  // return result;
 };
 
 const getMyAllFromDB = async (
@@ -158,6 +148,10 @@ const getMyAllFromDB = async (
         : {
             createdAt: "asc",
           },
+          include: {
+            user: true,
+            pet: true,
+          },
   });
 
   const total = await prisma.adoptionRequest.count({
@@ -198,6 +192,10 @@ const updateIntoDB = async (
       id: requestId,
     },
     data,
+    include: {
+      user: true,
+      pet: true,
+    },
   });
 
   return result;
@@ -205,7 +203,7 @@ const updateIntoDB = async (
 
 const deleteIntoDB = async (
   userData: IUser,
-  petId: string
+  requestId: string
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
@@ -217,13 +215,13 @@ const deleteIntoDB = async (
 
   await prisma.adoptionRequest.findUniqueOrThrow({
     where: {
-      id: petId,
+      id: requestId,
     },
   });
 
   const result = await prisma.adoptionRequest.delete({
     where: {
-      id: petId,
+      id: requestId,
     },
   });
 
