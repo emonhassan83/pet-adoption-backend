@@ -9,6 +9,8 @@ const loginUser = async (payload: { email: string; password: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
+      isDeleted: false,
+      status: UserStatus.ACTIVE
     },
   });
 
@@ -27,6 +29,7 @@ const loginUser = async (payload: { email: string; password: string }) => {
     {
       userId: userData.id,
       email: userData.email,
+      role: userData.role
     },
     config.jwt.jwt_secret as Secret,
     config.jwt.expires_in as string
@@ -42,7 +45,8 @@ const changePassword = async (user: any, payload: any) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: user.email,
-      status: UserStatus.ACTIVE,
+      isDeleted: false,
+      status: UserStatus.ACTIVE
     },
   });
 

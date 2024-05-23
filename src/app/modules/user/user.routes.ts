@@ -28,14 +28,14 @@ router.get(
 router.patch(
   "/:id/change-role",
   auth(UserRole.ADMIN),
-  // validateRequest(userValidation.updateStatus),
+  validateRequest(userValidation.updateRole),
   userController.changeUserRole
 );
 
 router.patch(
   "/:id/status",
   auth(UserRole.ADMIN),
-  // validateRequest(userValidation.updateStatus),
+  validateRequest(userValidation.updateStatus),
   userController.changeProfileStatus
 );
 

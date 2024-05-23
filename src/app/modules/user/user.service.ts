@@ -70,6 +70,9 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       id: true,
       name: true,
       email: true,
+      role: true,
+      isDeleted: true,
+      status: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -95,11 +98,14 @@ const getMyProfileFromDB = async (
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
+      isDeleted: false
     },
     select: {
       id: true,
       name: true,
       email: true,
+      role: true,
+      status: true,
       createdAt: true,
       updatedAt: true,
     },
@@ -115,18 +121,23 @@ const updateProfileIntoDB = async (
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
+      
     },
   });
 
   const result = await prisma.user.update({
     where: {
       id: userData?.userId,
+      isDeleted: false,
+      status: UserStatus.ACTIVE
     },
     data,
     select: {
       id: true,
       name: true,
       email: true,
+      role: true,
+      status: true,
       createdAt: true,
       updatedAt: true,
     },
