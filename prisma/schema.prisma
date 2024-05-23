@@ -21,14 +21,13 @@ model User {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   adoptionRequest AdoptionRequest[]
-  Pet             Pet[]
+  pet             Pet[]
 
   @@map("users")
 }
 
 model Pet {
   id                   String            @id @default(uuid())
-  userId               String
   name                 String
   image                String
   species              String
@@ -45,6 +44,7 @@ model Pet {
   updatedAt            DateTime          @updatedAt
 
   //* Define relationships
+  userId               String
   user                 User              @relation(fields: [userId], references: [id])
   adoptionRequest      AdoptionRequest[]
 

@@ -16,11 +16,22 @@ router.post(
 
 router.get("/", petController.getAllPets);
 
+router.get("/:petId", auth(UserRole.ADMIN, UserRole.USER), petController.getAllPets);
+
+router.post(
+  "/my-pets",
+  auth(UserRole.ADMIN),
+  validateRequest(petValidation.createPet),
+  petController.createPet
+);
+
 router.put(
   "/:petId",
   auth(UserRole.ADMIN),
   validateRequest(petValidation.updatePet),
   petController.updateAPet
 );
+
+router.delete("/:petId", auth(UserRole.ADMIN), petController.deleteAPet);
 
 export const petRoutes = router;

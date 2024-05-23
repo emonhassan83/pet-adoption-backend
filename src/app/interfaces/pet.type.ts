@@ -1,5 +1,8 @@
+import { User } from "@prisma/client"
+
 export type IPet = {
     name: string
+    user: string
     image: string
     species: string
     breed: string
