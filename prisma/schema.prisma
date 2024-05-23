@@ -15,18 +15,20 @@ model User {
   email           String            @unique
   password        String
   role            UserRole
-  profilePhoto  String?
+  profilePhoto    String?
   status          UserStatus        @default(ACTIVE)
   isDeleted       Boolean           @default(false)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   adoptionRequest AdoptionRequest[]
+  Pet             Pet[]
 
   @@map("users")
 }
 
 model Pet {
   id                   String            @id @default(uuid())
+  userId               String
   name                 String
   image                String
   species              String
@@ -41,6 +43,9 @@ model Pet {
   healthStatus         String
   createdAt            DateTime          @default(now())
   updatedAt            DateTime          @updatedAt
+
+  //* Define relationships
+  user                 User              @relation(fields: [userId], references: [id])
   adoptionRequest      AdoptionRequest[]
 
   @@map("pets")

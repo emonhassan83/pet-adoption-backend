@@ -1,13 +1,18 @@
-import { Pet, Prisma } from "@prisma/client";
+import { Pet, Prisma, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { IPaginationOptions, IPet, IUser } from "../../interfaces";
 import { petSearchAbleFields } from "./pet.constant";
 
-const createPetIntoDB = async (userData: IUser, petData: IPet): Promise<Pet> => {
+const createPetIntoDB = async (
+  userData: IUser,
+  petData: IPet
+): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
   });
 
@@ -18,6 +23,7 @@ const createPetIntoDB = async (userData: IUser, petData: IPet): Promise<Pet> => 
   return result;
 };
 
+//! todo filter option added
 const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   console.log(params);
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
@@ -49,8 +55,8 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   const whereConditions: Prisma.PetWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-    // console.dir(whereConditions, {depth: Infinity});
-    
+  // console.dir(whereConditions, {depth: Infinity});
+
   const result = await prisma.pet.findMany({
     where: whereConditions,
     skip,
@@ -87,9 +93,11 @@ const updateIntoDB = async (
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
   });
-  
+
   await prisma.pet.findUniqueOrThrow({
     where: {
       id: petId,
@@ -106,8 +114,33 @@ const updateIntoDB = async (
   return result;
 };
 
+const deleteIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.userId,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
+    },
+  });
+
+  await prisma.pet.findUniqueOrThrow({
+    where: {
+      id: petId,
+    },
+  });
+
+  const result = await prisma.pet.delete({
+    where: {
+      id: petId,
+    },
+  });
+
+  return result;
+};
+
 export const PetService = {
   createPetIntoDB,
   getAllPetsFromDB,
   updateIntoDB,
+  deleteIntoDB,
 };
