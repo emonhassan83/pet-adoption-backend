@@ -1,4 +1,4 @@
-import { Prisma, User } from "@prisma/client";
+import { Prisma, User, UserRole, UserStatus } from "@prisma/client";
 import { Request } from "express";
 import bcrypt from "bcrypt";
 import prisma from "../../../shared/prisma";
@@ -13,6 +13,7 @@ const createUser = async (req: Request): Promise<IUserData> => {
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
+    role: UserRole.USER
   };
 
   const result: User = await prisma.user.create({
@@ -134,9 +135,49 @@ const updateProfileIntoDB = async (
   return result;
 };
 
+const changeUserRole = async (id: string, role: UserRole) => {
+   await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE
+    },
+  });
+
+  const updateUserRole = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: role,
+  });
+
+  return updateUserRole;
+};
+
+const changeUserStatus = async (id: string, status: UserStatus) => {
+   await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE
+    },
+  });
+
+  const updateUserStatus = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: status,
+  });
+
+  return updateUserStatus;
+};
+
 export const userService = {
   createUser,
   getAllFromDB,
   getMyProfileFromDB,
   updateProfileIntoDB,
+  changeUserRole,
+  changeUserStatus
 };

@@ -55,9 +55,35 @@ const updateMyProfile = catchAsync(async (req, res) => {
   });
 });
 
+const changeUserRole = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await userService.changeUserRole(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Users role changed successfully!",
+    data: result,
+  });
+});
+
+const changeProfileStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await userService.changeUserStatus(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Users profile status changed!",
+    data: result,
+  });
+});
+
 export const userController = {
   createUser,
   getAllFromDB,
   getMyProfile,
   updateMyProfile,
+  changeUserRole,
+  changeProfileStatus,
 };
