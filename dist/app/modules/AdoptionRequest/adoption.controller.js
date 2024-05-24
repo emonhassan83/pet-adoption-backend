@@ -17,9 +17,11 @@ const http_status_1 = __importDefault(require("http-status"));
 const catchAsync_1 = __importDefault(require("../../../shared/catchAsync"));
 const sendResponse_1 = __importDefault(require("../../../shared/sendResponse"));
 const adoption_service_1 = require("./adoption.service");
+const pick_1 = __importDefault(require("../../../shared/pick"));
+const adoption_constant_1 = require("./adoption.constant");
 const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.createAdoptionRequestIntoDB(user, req.body);
+    const result = yield adoption_service_1.adoptionRequestService.createIntoDB(user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -28,19 +30,35 @@ const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
     });
 }));
 const getAllAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filters = (0, pick_1.default)(req.query, adoption_constant_1.adoptFilterableFields);
+    const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
     const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.getAllAdoptionRequestFromDB(user);
+    const result = yield adoption_service_1.adoptionRequestService.getAllFromDB(filters, options, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
         message: "Adoption requests retrieved successfully!",
-        data: result,
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getMyAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filters = (0, pick_1.default)(req.query, adoption_constant_1.adoptFilterableFields);
+    const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.getMyAllFromDB(filters, options, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "My all adoption requests retrieved successfully!",
+        meta: result.meta,
+        data: result.data,
     });
 }));
 const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
     const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.updateAdoptionRequestIntoDB(requestId, req.body, user);
+    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -48,8 +66,21 @@ const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter
         data: result,
     });
 }));
+const deleteAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { requestId } = req.params;
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.deleteIntoDB(user, requestId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Adoption request deleted successfully!",
+        data: result,
+    });
+}));
 exports.adoptionRequestController = {
     createAdoptionRequest,
     getAllAdoptionRequest,
+    getMyAdoptionRequest,
     updateAAdoptionRequest,
+    deleteAAdoptionRequest
 };

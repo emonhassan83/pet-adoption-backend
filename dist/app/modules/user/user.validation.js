@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userValidation = void 0;
+const client_1 = require("@prisma/client");
 const zod_1 = require("zod");
 const createUser = zod_1.z.object({
     body: zod_1.z.object({
@@ -25,7 +26,19 @@ const updateUser = zod_1.z.object({
         }).optional(),
     }),
 });
+const updateStatus = zod_1.z.object({
+    body: zod_1.z.object({
+        status: zod_1.z.enum([client_1.UserStatus.ACTIVE, client_1.UserStatus.BLOCKED, client_1.UserStatus.DELETED])
+    })
+});
+const updateRole = zod_1.z.object({
+    body: zod_1.z.object({
+        role: zod_1.z.enum([client_1.UserRole.ADMIN, client_1.UserRole.USER])
+    })
+});
 exports.userValidation = {
     createUser,
-    updateUser
+    updateUser,
+    updateStatus,
+    updateRole
 };

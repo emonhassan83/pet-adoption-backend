@@ -40,10 +40,13 @@ const config_1 = __importDefault(require("../../../config"));
 const jwtHelpers_1 = require("../../../helpers/jwtHelpers");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const bcrypt = __importStar(require("bcrypt"));
+const client_1 = require("@prisma/client");
 const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             email: payload.email,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE
         },
     });
     const { id, name, email } = userData;
@@ -55,9 +58,36 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
     const token = jwtHelpers_1.jwtHelpers.generateToken({
         userId: userData.id,
         email: userData.email,
+        role: userData.role
     }, config_1.default.jwt.jwt_secret, config_1.default.jwt.expires_in);
     return Object.assign(Object.assign({}, userResData), { token });
 });
+const changePassword = (user, payload) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            email: user.email,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE
+        },
+    });
+    const isCorrectPassword = yield bcrypt.compare(payload.oldPassword, userData.password);
+    if (!isCorrectPassword) {
+        throw new Error("Password incorrect!");
+    }
+    const hashedPassword = yield bcrypt.hash(payload.newPassword, 12);
+    yield prisma_1.default.user.update({
+        where: {
+            email: userData.email,
+        },
+        data: {
+            password: hashedPassword,
+        },
+    });
+    return {
+        message: "Password changed successfully!",
+    };
+});
 exports.AuthServices = {
     loginUser,
+    changePassword
 };

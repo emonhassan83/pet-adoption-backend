@@ -41,6 +41,30 @@ const getAllPets = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result.data,
     });
 }));
+const getMyPets = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const filters = (0, pick_1.default)(req.query, pet_constant_1.petSearchAbleFields);
+    const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield pet_service_1.PetService.getMyPetsFromDB(filters, options, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "My all pets retrieved successfully!",
+        meta: result.meta,
+        data: result.data,
+    });
+}));
+const getAPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { petId } = req.params;
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield pet_service_1.PetService.getAIntoDB(petId, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "A pet retrieved successfully!",
+        data: result,
+    });
+}));
 const updateAPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { petId } = req.params;
     const user = req === null || req === void 0 ? void 0 : req.user;
@@ -52,8 +76,22 @@ const updateAPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, voi
         data: result,
     });
 }));
+const deleteAPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { petId } = req.params;
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield pet_service_1.PetService.deleteIntoDB(user, petId);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Pet deleted successfully!",
+        data: result,
+    });
+}));
 exports.petController = {
     createPet,
     getAllPets,
-    updateAPet
+    getMyPets,
+    getAPet,
+    updateAPet,
+    deleteAPet
 };

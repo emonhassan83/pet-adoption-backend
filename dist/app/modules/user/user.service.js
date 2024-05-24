@@ -24,6 +24,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userService = void 0;
+const client_1 = require("@prisma/client");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const user_constant_1 = require("./user.constant");
@@ -34,6 +35,7 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
+        role: client_1.UserRole.USER
     };
     const result = yield prisma_1.default.user.create({
         data: userData,
@@ -80,8 +82,14 @@ const getAllFromDB = (params, options) => __awaiter(void 0, void 0, void 0, func
             id: true,
             name: true,
             email: true,
+            profilePhoto: true,
+            role: true,
+            isDeleted: true,
+            status: true,
             createdAt: true,
             updatedAt: true,
+            adoptionRequest: true,
+            pet: true
         },
     });
     const total = yield prisma_1.default.user.count({
@@ -100,13 +108,20 @@ const getMyProfileFromDB = (userData) => __awaiter(void 0, void 0, void 0, funct
     const result = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
+            isDeleted: false
         },
         select: {
             id: true,
             name: true,
             email: true,
+            profilePhoto: true,
+            role: true,
+            isDeleted: true,
+            status: true,
             createdAt: true,
             updatedAt: true,
+            adoptionRequest: true,
+            pet: true
         },
     });
     return result;
@@ -120,21 +135,89 @@ const updateProfileIntoDB = (userData, data) => __awaiter(void 0, void 0, void 0
     const result = yield prisma_1.default.user.update({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE
         },
         data,
         select: {
             id: true,
             name: true,
             email: true,
+            profilePhoto: true,
+            role: true,
+            isDeleted: true,
+            status: true,
             createdAt: true,
             updatedAt: true,
+            adoptionRequest: true,
+            pet: true,
         },
     });
     return result;
+});
+const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE
+        },
+    });
+    const updateUserRole = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: role,
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            profilePhoto: true,
+            role: true,
+            isDeleted: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+            adoptionRequest: true,
+            pet: true,
+        },
+    });
+    return updateUserRole;
+});
+const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE
+        },
+    });
+    const updateUserStatus = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: status,
+        select: {
+            id: true,
+            name: true,
+            email: true,
+            profilePhoto: true,
+            role: true,
+            isDeleted: true,
+            status: true,
+            createdAt: true,
+            updatedAt: true,
+            adoptionRequest: true,
+            pet: true,
+        },
+    });
+    return updateUserStatus;
 });
 exports.userService = {
     createUser,
     getAllFromDB,
     getMyProfileFromDB,
     updateProfileIntoDB,
+    changeUserRole,
+    changeUserStatus
 };

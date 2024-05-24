@@ -3,7 +3,6 @@ import prisma from "../../../shared/prisma";
 import { IAdoptionRequest, IPaginationOptions, IUser } from "../../interfaces";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 
-//!TODO: tasting all routes
 const createIntoDB = async (
   userData: IUser,
   data: IAdoptionRequest

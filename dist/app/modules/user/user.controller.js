@@ -60,9 +60,31 @@ const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0
         data: result,
     });
 }));
+const changeUserRole = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.userService.changeUserRole(id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users role changed successfully!",
+        data: result,
+    });
+}));
+const changeProfileStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.userService.changeUserStatus(id, req.body);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users profile status changed!",
+        data: result,
+    });
+}));
 exports.userController = {
     createUser,
     getAllFromDB,
     getMyProfile,
     updateMyProfile,
+    changeUserRole,
+    changeProfileStatus,
 };
