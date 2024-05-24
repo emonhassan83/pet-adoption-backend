@@ -35,7 +35,9 @@ const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
         name: req.body.name,
         email: req.body.email,
         password: hashedPassword,
-        role: client_1.UserRole.USER
+        role: client_1.UserRole.USER,
+        contactNumber: req.body.contactNumber,
+        address: req.body.address,
     };
     const result = yield prisma_1.default.user.create({
         data: userData,
@@ -84,12 +86,15 @@ const getAllFromDB = (params, options) => __awaiter(void 0, void 0, void 0, func
             email: true,
             profilePhoto: true,
             role: true,
+            contactNumber: true,
+            address: true,
+            gender: true,
             isDeleted: true,
             status: true,
             createdAt: true,
             updatedAt: true,
             adoptionRequest: true,
-            pet: true
+            pet: true,
         },
     });
     const total = yield prisma_1.default.user.count({
@@ -108,7 +113,7 @@ const getMyProfileFromDB = (userData) => __awaiter(void 0, void 0, void 0, funct
     const result = yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
-            isDeleted: false
+            isDeleted: false,
         },
         select: {
             id: true,
@@ -118,10 +123,13 @@ const getMyProfileFromDB = (userData) => __awaiter(void 0, void 0, void 0, funct
             role: true,
             isDeleted: true,
             status: true,
+            contactNumber: true,
+            address: true,
+            gender: true,
             createdAt: true,
             updatedAt: true,
             adoptionRequest: true,
-            pet: true
+            pet: true,
         },
     });
     return result;
@@ -136,7 +144,7 @@ const updateProfileIntoDB = (userData, data) => __awaiter(void 0, void 0, void 0
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
             isDeleted: false,
-            status: client_1.UserStatus.ACTIVE
+            status: client_1.UserStatus.ACTIVE,
         },
         data,
         select: {
@@ -145,6 +153,9 @@ const updateProfileIntoDB = (userData, data) => __awaiter(void 0, void 0, void 0
             email: true,
             profilePhoto: true,
             role: true,
+            contactNumber: true,
+            address: true,
+            gender: true,
             isDeleted: true,
             status: true,
             createdAt: true,
@@ -160,7 +171,7 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
         where: {
             id,
             isDeleted: false,
-            status: client_1.UserStatus.ACTIVE
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const updateUserRole = yield prisma_1.default.user.update({
@@ -174,6 +185,9 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
             email: true,
             profilePhoto: true,
             role: true,
+            contactNumber: true,
+            address: true,
+            gender: true,
             isDeleted: true,
             status: true,
             createdAt: true,
@@ -189,7 +203,7 @@ const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, funct
         where: {
             id,
             isDeleted: false,
-            status: client_1.UserStatus.ACTIVE
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const updateUserStatus = yield prisma_1.default.user.update({
@@ -203,6 +217,9 @@ const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, funct
             email: true,
             profilePhoto: true,
             role: true,
+            contactNumber: true,
+            address: true,
+            gender: true,
             isDeleted: true,
             status: true,
             createdAt: true,
@@ -219,5 +236,5 @@ exports.userService = {
     getMyProfileFromDB,
     updateProfileIntoDB,
     changeUserRole,
-    changeUserStatus
+    changeUserStatus,
 };

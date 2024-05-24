@@ -66,6 +66,17 @@ const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter
         data: result,
     });
 }));
+const updateAdoptionRequestStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { requestId } = req.params;
+    const user = req === null || req === void 0 ? void 0 : req.user;
+    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, user);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Adoption request status successfully!",
+        data: result,
+    });
+}));
 const deleteAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
     const user = req === null || req === void 0 ? void 0 : req.user;
@@ -82,5 +93,6 @@ exports.adoptionRequestController = {
     getAllAdoptionRequest,
     getMyAdoptionRequest,
     updateAAdoptionRequest,
+    updateAdoptionRequestStatus,
     deleteAAdoptionRequest
 };

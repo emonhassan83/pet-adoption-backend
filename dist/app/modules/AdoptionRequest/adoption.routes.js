@@ -15,5 +15,6 @@ router.post("/", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.
 router.get("/", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), adoption_controller_1.adoptionRequestController.getAllAdoptionRequest);
 router.get("/my-adoption", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), adoption_controller_1.adoptionRequestController.getMyAdoptionRequest);
 router.put("/:requestId", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), (0, validateRequest_1.default)(adoption_validation_1.adoptionRequestSchema.updateAdoptionRequest), adoption_controller_1.adoptionRequestController.updateAAdoptionRequest);
+router.patch("/:requestId/status", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), (0, validateRequest_1.default)(adoption_validation_1.adoptionRequestSchema.updateAdoptionRequestStatus), adoption_controller_1.adoptionRequestController.updateAdoptionRequestStatus);
 router.delete("/:requestId", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), adoption_controller_1.adoptionRequestController.deleteAAdoptionRequest);
 exports.adoptionRequestRoutes = router;

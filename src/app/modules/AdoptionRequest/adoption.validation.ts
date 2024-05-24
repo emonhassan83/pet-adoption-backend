@@ -12,7 +12,7 @@ const createAdoptionRequest = z.object({
     petsNeutered: z.boolean({
       required_error: "Pets Neutered is required!",
     }),
-    secureOutdoorArea: z.string({
+    secureOutdoorArea: z.boolean({
       required_error: "Secure outdoor area is required!",
     }),
     animalSleep: z.string({
@@ -48,7 +48,7 @@ const updateAdoptionRequest = z.object({
       })
       .optional(),
     secureOutdoorArea: z
-      .string({
+      .boolean({
         required_error: "Secure outdoor area is required!",
       })
       .optional(),

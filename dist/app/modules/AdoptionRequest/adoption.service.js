@@ -176,6 +176,33 @@ const updateIntoDB = (requestId, data, userData) => __awaiter(void 0, void 0, vo
     });
     return result;
 });
+const updateStatusIntoDB = (requestId, status, userData) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userData === null || userData === void 0 ? void 0 : userData.userId,
+            status: client_1.UserStatus.ACTIVE,
+            isDeleted: false,
+        },
+    });
+    yield prisma_1.default.adoptionRequest.findUniqueOrThrow({
+        where: {
+            id: requestId,
+        },
+    });
+    const result = yield prisma_1.default.adoptionRequest.update({
+        where: {
+            id: requestId,
+        },
+        data: {
+            status: status,
+        },
+        include: {
+            user: true,
+            pet: true,
+        },
+    });
+    return result;
+});
 const deleteIntoDB = (userData, requestId) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
@@ -201,5 +228,6 @@ exports.adoptionRequestService = {
     getAllFromDB,
     getMyAllFromDB,
     updateIntoDB,
+    updateStatusIntoDB,
     deleteIntoDB,
 };

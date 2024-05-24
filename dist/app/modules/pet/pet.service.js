@@ -41,7 +41,6 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
     });
     return result;
 });
-//! todo filter option added
 const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(params);
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
