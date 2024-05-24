@@ -20,7 +20,6 @@ const createPetIntoDB = async (userData: IUser, petData: any): Promise<Pet> => {
   return result;
 };
 
-//! todo filter option added
 const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   console.log(params);
   const { page, limit, skip } = paginationHelper.calculatePagination(options);

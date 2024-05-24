@@ -13,7 +13,9 @@ const createUser = async (req: Request): Promise<IUserData> => {
     name: req.body.name,
     email: req.body.email,
     password: hashedPassword,
-    role: UserRole.USER
+    role: UserRole.USER,
+    contactNumber: req.body.contactNumber,
+    address: req.body.address,
   };
 
   const result: User = await prisma.user.create({
@@ -72,12 +74,15 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       email: true,
       profilePhoto: true,
       role: true,
+      contactNumber: true,
+      address: true,
+      gender: true,
       isDeleted: true,
       status: true,
       createdAt: true,
       updatedAt: true,
       adoptionRequest: true,
-      pet: true 
+      pet: true,
     },
   });
 
@@ -101,7 +106,7 @@ const getMyProfileFromDB = async (
   const result = await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
-      isDeleted: false
+      isDeleted: false,
     },
     select: {
       id: true,
@@ -111,10 +116,13 @@ const getMyProfileFromDB = async (
       role: true,
       isDeleted: true,
       status: true,
+      contactNumber: true,
+      address: true,
+      gender: true,
       createdAt: true,
       updatedAt: true,
       adoptionRequest: true,
-      pet: true 
+      pet: true,
     },
   });
 
@@ -128,7 +136,6 @@ const updateProfileIntoDB = async (
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
-      
     },
   });
 
@@ -136,7 +143,7 @@ const updateProfileIntoDB = async (
     where: {
       id: userData?.userId,
       isDeleted: false,
-      status: UserStatus.ACTIVE
+      status: UserStatus.ACTIVE,
     },
     data,
     select: {
@@ -145,6 +152,9 @@ const updateProfileIntoDB = async (
       email: true,
       profilePhoto: true,
       role: true,
+      contactNumber: true,
+      address: true,
+      gender: true,
       isDeleted: true,
       status: true,
       createdAt: true,
@@ -158,11 +168,11 @@ const updateProfileIntoDB = async (
 };
 
 const changeUserRole = async (id: string, role: UserRole) => {
-   await prisma.user.findUniqueOrThrow({
+  await prisma.user.findUniqueOrThrow({
     where: {
       id,
       isDeleted: false,
-      status: UserStatus.ACTIVE
+      status: UserStatus.ACTIVE,
     },
   });
 
@@ -177,6 +187,9 @@ const changeUserRole = async (id: string, role: UserRole) => {
       email: true,
       profilePhoto: true,
       role: true,
+      contactNumber: true,
+      address: true,
+      gender: true,
       isDeleted: true,
       status: true,
       createdAt: true,
@@ -190,11 +203,11 @@ const changeUserRole = async (id: string, role: UserRole) => {
 };
 
 const changeUserStatus = async (id: string, status: UserStatus) => {
-   await prisma.user.findUniqueOrThrow({
+  await prisma.user.findUniqueOrThrow({
     where: {
       id,
       isDeleted: false,
-      status: UserStatus.ACTIVE
+      status: UserStatus.ACTIVE,
     },
   });
 
@@ -209,6 +222,9 @@ const changeUserStatus = async (id: string, status: UserStatus) => {
       email: true,
       profilePhoto: true,
       role: true,
+      contactNumber: true,
+      address: true,
+      gender: true,
       isDeleted: true,
       status: true,
       createdAt: true,
@@ -227,5 +243,5 @@ export const userService = {
   getMyProfileFromDB,
   updateProfileIntoDB,
   changeUserRole,
-  changeUserStatus
+  changeUserStatus,
 };

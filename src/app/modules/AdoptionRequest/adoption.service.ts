@@ -1,4 +1,9 @@
-import { AdoptionRequest, Prisma, UserStatus } from "@prisma/client";
+import {
+  AdoptionRequest,
+  Prisma,
+  RequestStatus,
+  UserStatus,
+} from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { IAdoptionRequest, IPaginationOptions, IUser } from "../../interfaces";
 import { paginationHelper } from "../../../helpers/paginationHelper";
@@ -147,10 +152,10 @@ const getMyAllFromDB = async (
         : {
             createdAt: "asc",
           },
-          include: {
-            user: true,
-            pet: true,
-          },
+    include: {
+      user: true,
+      pet: true,
+    },
   });
 
   const total = await prisma.adoptionRequest.count({
@@ -200,6 +205,41 @@ const updateIntoDB = async (
   return result;
 };
 
+const updateStatusIntoDB = async (
+  requestId: string,
+  status: RequestStatus,
+  userData: IUser
+): Promise<AdoptionRequest> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.userId,
+      status: UserStatus.ACTIVE,
+      isDeleted: false,
+    },
+  });
+
+  await prisma.adoptionRequest.findUniqueOrThrow({
+    where: {
+      id: requestId,
+    },
+  });
+
+  const result = await prisma.adoptionRequest.update({
+    where: {
+      id: requestId,
+    },
+    data: {
+      status: status,
+    },
+    include: {
+      user: true,
+      pet: true,
+    },
+  });
+
+  return result;
+};
+
 const deleteIntoDB = async (
   userData: IUser,
   requestId: string
@@ -232,5 +272,6 @@ export const adoptionRequestService = {
   getAllFromDB,
   getMyAllFromDB,
   updateIntoDB,
+  updateStatusIntoDB,
   deleteIntoDB,
 };

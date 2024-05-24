@@ -33,6 +33,13 @@ router.put(
   adoptionRequestController.updateAAdoptionRequest
 );
 
+router.patch(
+  "/:requestId/status",
+  auth(UserRole.ADMIN, UserRole.USER),
+  validateRequest(adoptionRequestSchema.updateAdoptionRequestStatus),
+  adoptionRequestController.updateAdoptionRequestStatus
+);
+
 router.delete(
   "/:requestId",
   auth(UserRole.ADMIN, UserRole.USER),

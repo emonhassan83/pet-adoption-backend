@@ -75,6 +75,24 @@ const updateAAdoptionRequest = catchAsync(async (req, res) => {
   });
 });
 
+const updateAdoptionRequestStatus = catchAsync(async (req, res) => {
+  const { requestId } = req.params;
+
+  const user = (req as RequestWithUser)?.user;
+  const result = await adoptionRequestService.updateIntoDB(
+    requestId,
+    req.body,
+    user
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Adoption request status successfully!",
+    data: result,
+  });
+});
+
 const deleteAAdoptionRequest = catchAsync(async (req, res) => {
   const { requestId } = req.params;
   const user = (req as RequestWithUser)?.user;
@@ -93,5 +111,6 @@ export const adoptionRequestController = {
   getAllAdoptionRequest,
   getMyAdoptionRequest,
   updateAAdoptionRequest,
+  updateAdoptionRequestStatus,
   deleteAAdoptionRequest
 };

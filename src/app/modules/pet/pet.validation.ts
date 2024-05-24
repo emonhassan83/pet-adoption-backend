@@ -14,8 +14,14 @@ const createPet = z.object({
     breed: z.string({
       required_error: "Breed is required!",
     }),
+    color: z.string({
+      required_error: "Color is required!",
+    }),
     age: z.number({
       required_error: "Age is required!",
+    }),
+    gender: z.string({
+      required_error: "Gender is required!",
     }),
     size: z.string({
       required_error: "Size is required!",
@@ -47,7 +53,9 @@ const updatePet = z.object({
     image: z.string().optional(),
     species: z.string().optional(),
     breed: z.string().optional(),
+    color: z.string().optional(),
     age: z.number().optional(),
+    gender: z.string().optional(),
     size: z.string().optional(),
     location: z.string().optional(),
     description: z.string().optional(),
