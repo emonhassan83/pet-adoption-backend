@@ -14,7 +14,9 @@ const router = express_1.default.Router();
 router.post("/", (0, auth_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(pet_validation_1.petValidation.createPet), pet_controller_1.petController.createPet);
 router.get("/", pet_controller_1.petController.getAllPets);
 router.get("/my-pets", (0, auth_1.default)(client_1.UserRole.ADMIN), pet_controller_1.petController.getMyPets);
-router.get("/:petId", (0, auth_1.default)(client_1.UserRole.ADMIN, client_1.UserRole.USER), pet_controller_1.petController.getAPet);
+router.get("/:petId", 
+// auth(UserRole.ADMIN, UserRole.USER),
+pet_controller_1.petController.getAPet);
 router.put("/:petId", (0, auth_1.default)(client_1.UserRole.ADMIN), (0, validateRequest_1.default)(pet_validation_1.petValidation.updatePet), pet_controller_1.petController.updateAPet);
 router.delete("/:petId", (0, auth_1.default)(client_1.UserRole.ADMIN), pet_controller_1.petController.deleteAPet);
 exports.petRoutes = router;

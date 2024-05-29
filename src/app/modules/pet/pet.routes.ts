@@ -20,7 +20,7 @@ router.get("/my-pets", auth(UserRole.ADMIN), petController.getMyPets);
 
 router.get(
   "/:petId",
-  auth(UserRole.ADMIN, UserRole.USER),
+  // auth(UserRole.ADMIN, UserRole.USER),
   petController.getAPet
 );
 
