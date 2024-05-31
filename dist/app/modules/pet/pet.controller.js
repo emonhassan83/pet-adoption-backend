@@ -30,7 +30,7 @@ const createPet = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void
     });
 }));
 const getAllPets = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const filters = (0, pick_1.default)(req.query, pet_constant_1.petSearchAbleFields);
+    const filters = (0, pick_1.default)(req.query, pet_constant_1.petFilterableFields);
     const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
     const result = yield pet_service_1.PetService.getAllPetsFromDB(filters, options);
     (0, sendResponse_1.default)(res, {

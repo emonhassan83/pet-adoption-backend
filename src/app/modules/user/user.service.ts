@@ -205,9 +205,7 @@ const changeUserRole = async (id: string, role: UserRole) => {
 const changeUserStatus = async (id: string, status: UserStatus) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id,
-      isDeleted: false,
-      status: UserStatus.ACTIVE,
+      id
     },
   });
 

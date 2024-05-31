@@ -201,9 +201,7 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
 const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            id,
-            isDeleted: false,
-            status: client_1.UserStatus.ACTIVE,
+            id
         },
     });
     const updateUserStatus = yield prisma_1.default.user.update({

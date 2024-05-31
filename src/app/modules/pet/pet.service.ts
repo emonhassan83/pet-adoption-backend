@@ -21,18 +21,17 @@ const createPetIntoDB = async (userData: IUser, petData: any): Promise<Pet> => {
 };
 
 const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
-  console.log(params);
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
   const andConditions: Prisma.PetWhereInput[] = [];
 
-  if (params.searchTerm) {
+  if (searchTerm) {
     andConditions.push({
       OR: petSearchAbleFields.map((field) => ({
         [field]: {
-          contains: params.searchTerm,
-          mode: "insensitive",
+          contains: searchTerm,
+          mode: 'insensitive',
         },
       })),
     });
@@ -51,7 +50,7 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   const whereConditions: Prisma.PetWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
-  // console.dir(whereConditions, {depth: Infinity});
+  // console.dir(whereConditions, { depth: Infinity });
 
   const result = await prisma.pet.findMany({
     where: whereConditions,
@@ -63,12 +62,12 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: "asc",
+            createdAt: 'asc',
           },
-          include: {
-            user: true,
-            adoptionRequest: true,
-          }
+    include: {
+      user: true,
+      adoptionRequest: true,
+    },
   });
 
   const total = await prisma.pet.count({
@@ -84,6 +83,7 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
     data: result,
   };
 };
+
 
 const getMyPetsFromDB = async (
   params: any,

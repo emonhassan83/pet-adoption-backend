@@ -3,7 +3,7 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import { PetService } from "./pet.service";
 import pick from "../../../shared/pick";
-import { petSearchAbleFields } from "./pet.constant";
+import { petFilterableFields, petSearchAbleFields } from "./pet.constant";
 import { RequestWithUser } from "../../interfaces";
 
 const createPet = catchAsync(async (req, res) => {
@@ -19,7 +19,7 @@ const createPet = catchAsync(async (req, res) => {
 });
 
 const getAllPets = catchAsync(async (req, res) => {  
-    const filters = pick(req.query, petSearchAbleFields);
+    const filters = pick(req.query, petFilterableFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   
     const result = await PetService.getAllPetsFromDB(filters, options);

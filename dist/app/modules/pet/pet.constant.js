@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.petFilterableFields = exports.petSearchAbleFields = void 0;
 exports.petSearchAbleFields = [
+    "name",
     "species",
     "breed",
     "age",

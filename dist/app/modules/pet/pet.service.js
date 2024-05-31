@@ -42,15 +42,14 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
     return result;
 });
 const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(params);
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
-    if (params.searchTerm) {
+    if (searchTerm) {
         andConditions.push({
             OR: pet_constant_1.petSearchAbleFields.map((field) => ({
                 [field]: {
-                    contains: params.searchTerm,
+                    contains: searchTerm,
                     mode: "insensitive",
                 },
             })),
@@ -66,7 +65,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         });
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
-    // console.dir(whereConditions, {depth: Infinity});
+    console.dir(whereConditions, { depth: Infinity });
     const result = yield prisma_1.default.pet.findMany({
         where: whereConditions,
         skip,
