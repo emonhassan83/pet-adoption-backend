@@ -51,6 +51,7 @@ const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // console.log(req.body);
     const user = req === null || req === void 0 ? void 0 : req.user;
     const result = yield user_service_1.userService.updateProfileIntoDB(user, req.body);
     (0, sendResponse_1.default)(res, {

@@ -34,6 +34,11 @@ const updateUser = zod_1.z.object({
             required_error: "Email is required!",
         })
             .optional(),
+        profilePhoto: zod_1.z
+            .string({
+            required_error: "Profile photo is required!",
+        })
+            .optional(),
         contactNumber: zod_1.z
             .string({
             required_error: "Contact number is required!",

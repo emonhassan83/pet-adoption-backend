@@ -9,16 +9,16 @@ const createAdoptionRequest = z.object({
     petsHousehold: z.string({
       required_error: "Pets household is required!",
     }),
-    petsNeutered: z.boolean({
+    petsNeutered: z.string({
       required_error: "Pets Neutered is required!",
     }),
-    secureOutdoorArea: z.boolean({
+    secureOutdoorArea: z.string({
       required_error: "Secure outdoor area is required!",
     }),
     animalSleep: z.string({
       required_error: "Animal sleep is required!",
     }),
-    animalAlonePeriodsTime: z.boolean({
+    animalAlonePeriodsTime: z.string({
       required_error: "Animal alone periods time is required!",
     }),
     detailsSupport: z.string({
@@ -43,12 +43,12 @@ const updateAdoptionRequest = z.object({
       })
       .optional(),
     petsNeutered: z
-      .boolean({
+      .string({
         required_error: "Pets Neutered is required!",
       })
       .optional(),
     secureOutdoorArea: z
-      .boolean({
+      .string({
         required_error: "Secure outdoor area is required!",
       })
       .optional(),
@@ -58,7 +58,7 @@ const updateAdoptionRequest = z.object({
       })
       .optional(),
     animalAlonePeriodsTime: z
-      .boolean({
+      .string({
         required_error: "Animal alone periods time is required!",
       })
       .optional(),

@@ -1,12 +1,12 @@
-import { AnimelSleep } from "@prisma/client";
+import { AnimelSleep, OpinionOption } from "@prisma/client";
 
 export type IAdoptionRequest = {
   petId: string;
   petOwnershipExperience: string;
   petsHousehold: string;
-  petsNeutered: boolean;
-  secureOutdoorArea: boolean;
+  petsNeutered: OpinionOption;
+  secureOutdoorArea: OpinionOption;
   animalSleep: AnimelSleep;
-  animalAlonePeriodsTime: boolean;
+  animalAlonePeriodsTime: OpinionOption;
   detailsSupport: string;
 };

@@ -138,7 +138,7 @@ const updateProfileIntoDB = async (
       id: userData?.userId,
     },
   });
-
+  
   const result = await prisma.user.update({
     where: {
       id: userData?.userId,

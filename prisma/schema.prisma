@@ -63,10 +63,10 @@ model AdoptionRequest {
   status                 RequestStatus @default(PENDING)
   petsHousehold          String
   petOwnershipExperience String
-  petsNeutered           Boolean       @default(true)
-  secureOutdoorArea      Boolean       @default(true)
+  petsNeutered           OpinionOption       @default(YES)
+  secureOutdoorArea      OpinionOption       @default(YES)
   animalSleep            AnimelSleep
-  animalAlonePeriodsTime Boolean       @default(false)
+  animalAlonePeriodsTime OpinionOption       @default(NO)
   detailsSupport        String
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
@@ -107,4 +107,9 @@ enum AnimelSleep {
   Room
   Garage
   Crate
+}
+
+enum OpinionOption {
+  YES
+  NO
 }

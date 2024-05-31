@@ -44,6 +44,8 @@ const getMyProfile = catchAsync(async (req, res) => {
 });
 
 const updateMyProfile = catchAsync(async (req, res) => {
+  // console.log(req.body);
+  
   const user = (req as RequestWithUser)?.user;
   const result = await userService.updateProfileIntoDB(user, req.body);
 
