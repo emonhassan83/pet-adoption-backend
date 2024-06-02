@@ -50,7 +50,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
             OR: pet_constant_1.petSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
-                    mode: "insensitive",
+                    mode: 'insensitive',
                 },
             })),
         });
@@ -65,7 +65,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         });
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
-    console.dir(whereConditions, { depth: Infinity });
+    // console.dir(whereConditions, { depth: Infinity });
     const result = yield prisma_1.default.pet.findMany({
         where: whereConditions,
         skip,
@@ -75,12 +75,12 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
                 [options.sortBy]: options.sortOrder,
             }
             : {
-                createdAt: "asc",
+                createdAt: 'asc',
             },
         include: {
             user: true,
             adoptionRequest: true,
-        }
+        },
     });
     const total = yield prisma_1.default.pet.count({
         where: whereConditions,
