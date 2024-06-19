@@ -27,6 +27,7 @@ model User {
   pet             Pet[]
   blog            Blog[]
   comment         Comment[]
+  donation        Donation[]
 
   @@map("users")
 }
@@ -54,6 +55,7 @@ model Pet {
   userId          String
   user            User              @relation(fields: [userId], references: [id])
   adoptionRequest AdoptionRequest[]
+  donation        Donation[]
 
   @@map("pets")
 }
@@ -114,6 +116,25 @@ model Comment {
   author User   @relation(fields: [userId], references: [id])
 
   @@map("comments")
+}
+
+model Donation {
+  id         String   @id @default(uuid())
+  amount     Float
+  currency   String
+  donorName  String
+  donorEmail String
+  message    String?
+  donatedAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  //* Define relationships
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+  petId  String?
+  pet    Pet?    @relation(fields: [petId], references: [id])
+
+  @@map("donations")
 }
 
 enum UserRole {
