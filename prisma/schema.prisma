@@ -18,13 +18,15 @@ model User {
   profilePhoto    String?
   contactNumber   String
   address         String
-  gender          Gender?            @default(Unknown)
+  gender          Gender?           @default(Unknown)
   status          UserStatus        @default(ACTIVE)
   isDeleted       Boolean           @default(false)
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   adoptionRequest AdoptionRequest[]
   pet             Pet[]
+  blog            Blog[]
+  comment         Comment[]
 
   @@map("users")
 }
@@ -63,11 +65,11 @@ model AdoptionRequest {
   status                 RequestStatus @default(PENDING)
   petsHousehold          String
   petOwnershipExperience String
-  petsNeutered           OpinionOption       @default(YES)
-  secureOutdoorArea      OpinionOption       @default(YES)
+  petsNeutered           OpinionOption @default(YES)
+  secureOutdoorArea      OpinionOption @default(YES)
   animalSleep            AnimelSleep
-  animalAlonePeriodsTime OpinionOption       @default(NO)
-  detailsSupport        String
+  animalAlonePeriodsTime OpinionOption @default(NO)
+  detailsSupport         String
   createdAt              DateTime      @default(now())
   updatedAt              DateTime      @updatedAt
 
@@ -78,7 +80,44 @@ model AdoptionRequest {
   @@map("adoptionrequests")
 }
 
+model Blog {
+  id          String     @id @default(uuid())
+  title       String
+  description String
+  image       String
+  reference   String
+  tags        String[]
+  category    String
+  status      BlogStatus @default(DRAFT)
+  views       Int        @default(0)
+  publishedAt DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  //* Define relationships
+  userId  String
+  author  User      @relation(fields: [userId], references: [id])
+  comment Comment[]
+
+  @@map("blogs")
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  //* Define relationships
+  blogId String
+  userId String
+  blog   Blog   @relation(fields: [blogId], references: [id])
+  author User   @relation(fields: [userId], references: [id])
+
+  @@map("comments")
+}
+
 enum UserRole {
+  SUPER_ADMIN
   ADMIN
   USER
 }
@@ -112,4 +151,9 @@ enum AnimelSleep {
 enum OpinionOption {
   YES
   NO
+}
+
+enum BlogStatus {
+  DRAFT
+  PUBLISHED
 }

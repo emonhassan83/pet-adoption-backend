@@ -87,7 +87,7 @@ const getABlog = catchAsync(async (req, res) => {
     });
   });
 
-export const petController = {
+export const blogController = {
   createBlog,
   getAllBlogs,
   getMyBlogs,
