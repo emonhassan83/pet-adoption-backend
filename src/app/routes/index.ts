@@ -3,6 +3,7 @@ import { userRoutes } from "../modules/user/user.routes";
 import { AuthRoutes } from "../modules/auth/auth.routes";
 import { petRoutes } from "../modules/pet/pet.routes";
 import { adoptionRequestRoutes } from "../modules/AdoptionRequest/adoption.routes";
+import { blogRoutes } from "../modules/blog/blog.routes";
 
 const router = express.Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: "/adoption-requests",
     route: adoptionRequestRoutes,
+  },
+  {
+    path: "/blog",
+    route: blogRoutes,
   },
 ];
 

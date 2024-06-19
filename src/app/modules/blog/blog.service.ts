@@ -1,9 +1,10 @@
-import { Pet, Prisma, UserStatus } from "@prisma/client";
+import { Blog, Pet, Prisma, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { IPaginationOptions, IUser } from "../../interfaces";
+import { blogSearchAbleFields } from "./blog.constant";
 
-const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Pet> => {
+const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
@@ -12,7 +13,7 @@ const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Pet> =>
     },
   });
 
-  const result = await prisma.pet.create({
+  const result = await prisma.blog.create({
     data: blogData,
   });
 
@@ -23,11 +24,11 @@ const getAllBlogsFromDB = async (params: any, options: IPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
-  const andConditions: Prisma.PetWhereInput[] = [];
+  const andConditions: Prisma.BlogWhereInput[] = [];
 
   if (searchTerm) {
     andConditions.push({
-      OR: petSearchAbleFields.map((field) => ({
+      OR: blogSearchAbleFields.map((field) => ({
         [field]: {
           contains: searchTerm,
           mode: 'insensitive',
@@ -46,12 +47,12 @@ const getAllBlogsFromDB = async (params: any, options: IPaginationOptions) => {
     });
   }
 
-  const whereConditions: Prisma.PetWhereInput =
+  const whereConditions: Prisma.BlogWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
   // console.dir(whereConditions, { depth: Infinity });
 
-  const result = await prisma.pet.findMany({
+  const result = await prisma.blog.findMany({
     where: whereConditions,
     skip,
     take: limit,
@@ -61,15 +62,15 @@ const getAllBlogsFromDB = async (params: any, options: IPaginationOptions) => {
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: 'asc',
+            publishedAt: 'asc',
           },
     include: {
-      user: true,
-      adoptionRequest: true,
+      author: true,
+      comment: true,
     },
   });
 
-  const total = await prisma.pet.count({
+  const total = await prisma.blog.count({
     where: whereConditions,
   });
 
@@ -91,11 +92,11 @@ const getMyBlogsFromDB = async (
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
-  const andConditions: Prisma.PetWhereInput[] = [];
+  const andConditions: Prisma.BlogWhereInput[] = [];
 
   if (userData?.role) {
     andConditions.push({
-      user: {
+      author: {
         id: userData.userId,
       },
     });
@@ -103,7 +104,7 @@ const getMyBlogsFromDB = async (
 
   if (params.searchTerm) {
     andConditions.push({
-      OR: petSearchAbleFields.map((field) => ({
+      OR: blogSearchAbleFields.map((field) => ({
         [field]: {
           contains: params.searchTerm,
           mode: "insensitive",
@@ -122,12 +123,12 @@ const getMyBlogsFromDB = async (
     });
   }
 
-  const whereConditions: Prisma.PetWhereInput =
+  const whereConditions: Prisma.BlogWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {};
 
   // console.dir(whereConditions, {depth: Infinity});
 
-  const result = await prisma.pet.findMany({
+  const result = await prisma.blog.findMany({
     where: whereConditions,
     skip,
     take: limit,
@@ -137,15 +138,15 @@ const getMyBlogsFromDB = async (
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: "asc",
+            publishedAt: "asc",
           },
           include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+          comment: true,
           }
   });
 
-  const total = await prisma.pet.count({
+  const total = await prisma.blog.count({
     where: whereConditions,
   });
 
@@ -159,28 +160,28 @@ const getMyBlogsFromDB = async (
   };
 };
 
-const getABlogIntoDB = async (petId: string, userData: IUser) => {
-  // await prisma.user.findUniqueOrThrow({
-  //   where: {
-  //     id: userData?.userId,
-  //     isDeleted: false,
-  //     status: UserStatus.ACTIVE,
-  //   },
-  // });
-
-  await prisma.pet.findUniqueOrThrow({
+const getABlogIntoDB = async (blogId: string, userData: IUser) => {
+  await prisma.user.findUniqueOrThrow({
     where: {
-      id: petId,
+      id: userData?.userId,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
+    },
+  });
+
+  await prisma.blog.findUniqueOrThrow({
+    where: {
+      id: blogId,
     }
   });
 
-  const result = await prisma.pet.findUnique({
+  const result = await prisma.blog.findUnique({
     where: {
-      id: petId,
+      id: blogId,
     },
     include: {
-      user: true,
-      adoptionRequest: true,
+      author: true,
+      comment: true,
     }
   });
 
@@ -189,9 +190,9 @@ const getABlogIntoDB = async (petId: string, userData: IUser) => {
 
 const updateBlogIntoDB = async (
   userData: IUser,
-  petId: string,
-  data: Partial<Pet>
-): Promise<Pet> => {
+  blogId: string,
+  data: Partial<Blog>
+): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
@@ -200,27 +201,27 @@ const updateBlogIntoDB = async (
     },
   });
 
-  await prisma.pet.findUniqueOrThrow({
+  await prisma.blog.findUniqueOrThrow({
     where: {
-      id: petId,
+      id: blogId,
     },
   });
 
-  const result = await prisma.pet.update({
+  const result = await prisma.blog.update({
     where: {
-      id: petId,
+      id: blogId,
     },
     data,
     include: {
-      user: true,
-      adoptionRequest: true,
+      author: true,
+      comment: true,
     }
   });
 
   return result;
 };
 
-const deleteBlogIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
+const deleteBlogIntoDB = async (userData: IUser, blogId: string): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.userId,
@@ -229,15 +230,15 @@ const deleteBlogIntoDB = async (userData: IUser, petId: string): Promise<Pet> =>
     },
   });
 
-  await prisma.pet.findUniqueOrThrow({
+  await prisma.blog.findUniqueOrThrow({
     where: {
-      id: petId,
+      id: blogId,
     },
   });
 
-  const result = await prisma.pet.delete({
+  const result = await prisma.blog.delete({
     where: {
-      id: petId,
+      id: blogId,
     },
   });
 

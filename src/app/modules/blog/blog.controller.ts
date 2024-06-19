@@ -3,10 +3,12 @@ import catchAsync from "../../../shared/catchAsync";
 import sendResponse from "../../../shared/sendResponse";
 import pick from "../../../shared/pick";
 import { RequestWithUser } from "../../interfaces";
+import { blogFilterableFields, blogSearchAbleFields } from "./blog.constant";
+import { BlogService } from "./blog.service";
 
 const createBlog = catchAsync(async (req, res) => {
   const user = (req as RequestWithUser)?.user;
-  const result = await PetService.createPetIntoDB(user, req.body);
+  const result = await BlogService.createBlogIntoDB(user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -17,10 +19,10 @@ const createBlog = catchAsync(async (req, res) => {
 });
 
 const getAllBlogs = catchAsync(async (req, res) => {  
-    const filters = pick(req.query, petFilterableFields);
+    const filters = pick(req.query, blogFilterableFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
   
-    const result = await PetService.getAllPetsFromDB(filters, options);
+    const result = await BlogService.getAllBlogsFromDB(filters, options);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -32,11 +34,11 @@ const getAllBlogs = catchAsync(async (req, res) => {
   });
 
 const getMyBlogs = catchAsync(async (req, res) => {  
-    const filters = pick(req.query, petSearchAbleFields);
+    const filters = pick(req.query, blogSearchAbleFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
     const user = (req as RequestWithUser)?.user;
   
-    const result = await PetService.getMyPetsFromDB(filters, options, user);
+    const result = await BlogService.getMyBlogsFromDB(filters, options, user);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -51,7 +53,7 @@ const getABlog = catchAsync(async (req, res) => {
   const { petId } = req.params;
     const user = (req as RequestWithUser)?.user;
   
-    const result = await PetService.getAIntoDB(petId, user);
+    const result = await BlogService.getABlogIntoDB(petId, user);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -64,7 +66,7 @@ const getABlog = catchAsync(async (req, res) => {
   const updateABlog = catchAsync(async (req, res) => {
     const { petId } = req.params;
     const user = (req as RequestWithUser)?.user;
-    const result = await PetService.updateIntoDB(user, petId, req.body);
+    const result = await BlogService.updateBlogIntoDB(user, petId, req.body);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -77,7 +79,7 @@ const getABlog = catchAsync(async (req, res) => {
   const deleteABlog = catchAsync(async (req, res) => {
     const { petId } = req.params;
     const user = (req as RequestWithUser)?.user;
-    const result = await PetService.deleteIntoDB(user, petId);
+    const result = await BlogService.deleteBlogIntoDB(user, petId);
   
     sendResponse(res, {
       statusCode: httpStatus.OK,
