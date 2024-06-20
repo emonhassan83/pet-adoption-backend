@@ -1,11 +1,4 @@
-import {
-  Blog,
-  Comment,
-  Donation,
-  Pet,
-  Prisma,
-  UserStatus,
-} from "@prisma/client";
+import { Donation, Prisma, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { IPaginationOptions, IUser } from "../../interfaces";

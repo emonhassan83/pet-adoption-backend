@@ -5,6 +5,7 @@ import { petRoutes } from "../modules/pet/pet.routes";
 import { adoptionRequestRoutes } from "../modules/AdoptionRequest/adoption.routes";
 import { blogRoutes } from "../modules/blog/blog.routes";
 import { commentRoutes } from "../modules/comment/comment.routes";
+import { donateRoutes } from "../modules/donate/donate.routes";
 
 const router = express.Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: "/comment",
     route: commentRoutes,
+  },
+  {
+    path: "/donate",
+    route: donateRoutes,
   },
 ];
 
