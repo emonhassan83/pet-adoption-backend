@@ -1,5 +1,3 @@
-# l2-b2-fullstack-track-assignment-8-emonhassan83
-
 ### Project Objective
 
 This is a Pet Adoption Platform project that I am using TypeScript, Express.js and Object Relation Modeling (ORM) Prisma with PostgreSQL.
