@@ -1,21 +1,25 @@
 import { Prisma, User, UserRole, UserStatus } from "@prisma/client";
-import { Request } from "express";
 import bcrypt from "bcrypt";
 import prisma from "../../../shared/prisma";
 import { userSearchAbleFields } from "./user.constant";
-import { IPaginationOptions, IUser, IUserData } from "../../interfaces";
+import {
+  IPaginationOptions,
+  IUser,
+  IUserData,
+  IUserResponseData,
+} from "../../interfaces";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 
-const createUser = async (req: Request): Promise<IUserData> => {
-  const hashedPassword: string = await bcrypt.hash(req.body.password, 12);
+const createUser = async (user: IUserData): Promise<IUserResponseData> => {
+  const hashedPassword: string = await bcrypt.hash(user.password, 12);
 
   const userData = {
-    name: req.body.name,
-    email: req.body.email,
+    name: user.name,
+    email: user.email,
     password: hashedPassword,
     role: UserRole.USER,
-    contactNumber: req.body.contactNumber,
-    address: req.body.address,
+    contactNumber: user.contactNumber,
+    address: user.address,
   };
 
   const result: User = await prisma.user.create({
@@ -79,10 +83,10 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
       gender: true,
       isDeleted: true,
       status: true,
-      createdAt: true,
-      updatedAt: true,
-      adoptionRequest: true,
-      pet: true,
+      // createdAt: true,
+      // updatedAt: true,
+      // adoptionRequest: true,
+      // pet: true,
     },
   });
 
@@ -102,11 +106,12 @@ const getAllFromDB = async (params: any, options: IPaginationOptions) => {
 
 const getMyProfileFromDB = async (
   userData: IUser
-): Promise<IUserData | null> => {
+): Promise<IUserResponseData | null> => {
   const result = await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
     select: {
       id: true,
@@ -121,8 +126,6 @@ const getMyProfileFromDB = async (
       gender: true,
       createdAt: true,
       updatedAt: true,
-      adoptionRequest: true,
-      pet: true,
     },
   });
 
@@ -132,16 +135,18 @@ const getMyProfileFromDB = async (
 const updateProfileIntoDB = async (
   userData: IUser,
   data: Partial<User>
-): Promise<IUserData> => {
+): Promise<IUserResponseData> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
   });
-  
+
   const result = await prisma.user.update({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -159,8 +164,6 @@ const updateProfileIntoDB = async (
       status: true,
       createdAt: true,
       updatedAt: true,
-      adoptionRequest: true,
-      pet: true,
     },
   });
 
@@ -179,6 +182,8 @@ const changeUserRole = async (id: string, role: UserRole) => {
   const updateUserRole = await prisma.user.update({
     where: {
       id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
     data: role,
     select: {
@@ -194,8 +199,6 @@ const changeUserRole = async (id: string, role: UserRole) => {
       status: true,
       createdAt: true,
       updatedAt: true,
-      adoptionRequest: true,
-      pet: true,
     },
   });
 
@@ -205,7 +208,7 @@ const changeUserRole = async (id: string, role: UserRole) => {
 const changeUserStatus = async (id: string, status: UserStatus) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id
+      id,
     },
   });
 
@@ -227,12 +230,30 @@ const changeUserStatus = async (id: string, status: UserStatus) => {
       status: true,
       createdAt: true,
       updatedAt: true,
-      adoptionRequest: true,
-      pet: true,
     },
   });
 
   return updateUserStatus;
+};
+
+const softDelete = async (id: string): Promise<User | null> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id,
+    },
+  });
+  
+  const userSoftDelete = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      isDeleted: true,
+      status: UserStatus.DELETED,
+    },
+  });
+
+  return userSoftDelete;
 };
 
 export const userService = {
@@ -242,4 +263,5 @@ export const userService = {
   updateProfileIntoDB,
   changeUserRole,
   changeUserStatus,
+  softDelete,
 };

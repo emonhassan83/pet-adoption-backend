@@ -1,6 +1,6 @@
 import { Gender, UserRole, UserStatus } from "@prisma/client";
 
-export type IUserData = {
+export type IUserResponseData = {
   id: string;
   name: string;
   email: string;
@@ -14,8 +14,16 @@ export type IUserData = {
   updatedAt: Date;
 };
 
+export type IUserData = {
+  name: string;
+  email: string;
+  password: string;
+  contactNumber: string;
+  address: string;
+};
+
 export type IUser = {
-  userId: string;
+  id: string;
   email: string;
   role: UserRole;
   iat: number;

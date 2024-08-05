@@ -7,7 +7,7 @@ import { userFilterableFields } from "./user.constant";
 import { RequestWithUser } from "../../interfaces";
 
 const createUser = catchAsync(async (req, res) => {
-  const result = await userService.createUser(req);
+  const result = await userService.createUser(req.body);
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
     success: true,
@@ -32,8 +32,7 @@ const getAllFromDB = catchAsync(async (req, res) => {
 });
 
 const getMyProfile = catchAsync(async (req, res) => {
-  const user = (req as RequestWithUser)?.user;
-  const result = await userService.getMyProfileFromDB(user);
+  const result = await userService.getMyProfileFromDB((req as RequestWithUser)?.user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -44,10 +43,7 @@ const getMyProfile = catchAsync(async (req, res) => {
 });
 
 const updateMyProfile = catchAsync(async (req, res) => {
-  // console.log(req.body);
-  
-  const user = (req as RequestWithUser)?.user;
-  const result = await userService.updateProfileIntoDB(user, req.body);
+  const result = await userService.updateProfileIntoDB((req as RequestWithUser)?.user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -81,6 +77,17 @@ const changeProfileStatus = catchAsync(async (req, res) => {
   });
 });
 
+const softDelete = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await userService.softDelete(id);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Users soft deleted successfully!",
+    data: result,
+  });
+});
+
 export const userController = {
   createUser,
   getAllFromDB,
@@ -88,4 +95,5 @@ export const userController = {
   updateMyProfile,
   changeUserRole,
   changeProfileStatus,
+  softDelete
 };
