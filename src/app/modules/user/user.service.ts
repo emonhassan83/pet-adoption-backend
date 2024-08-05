@@ -242,7 +242,7 @@ const softDelete = async (id: string): Promise<User | null> => {
       id,
     },
   });
-  
+
   const userSoftDelete = await prisma.user.update({
     where: {
       id,

@@ -80,6 +80,7 @@ const changeProfileStatus = catchAsync(async (req, res) => {
 const softDelete = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await userService.softDelete(id);
+
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
