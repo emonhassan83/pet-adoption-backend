@@ -19,7 +19,7 @@ const emailSender = async (
     });
 
     const info = await transporter.sendMail({
-        from: '"PH Health Care" <emonhasan7650@gmail.com>', // sender address
+        from: '"Pet Adopt Platform" <emonhasan7650@gmail.com>', // sender address
         to: email, // list of receivers
         subject: "Reset Password Link", // Subject line
         //text: "Hello world?", // plain text body

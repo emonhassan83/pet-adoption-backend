@@ -97,7 +97,6 @@ const changePassword = async (user: any, payload: any) => {
     payload.oldPassword,
     userData.password
   );
-
   if (!isCorrectPassword) {
     throw new Error("Password incorrect!");
   }
@@ -107,6 +106,8 @@ const changePassword = async (user: any, payload: any) => {
   await prisma.user.update({
     where: {
       email: userData.email,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
     data: {
       password: hashedPassword,
@@ -122,12 +123,17 @@ const forgotPassword = async (payload: { email: string }) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       email: payload.email,
+      isDeleted: false,
       status: UserStatus.ACTIVE,
     },
   });
 
   const resetPassToken = jwtHelpers.generateToken(
-    { userId: userData.id, email: userData.email, role: userData.role },
+    { 
+      userId: userData.id,
+      email: userData.email, 
+      role: userData.role 
+    },
     config.jwt.reset_pass_secret as Secret,
     config.jwt.reset_pass_token_expires_in as string
   );
@@ -168,9 +174,10 @@ const resetPassword = async (
   token: string,
   payload: { id: string; password: string }
 ) => {
-   await prisma.user.findUniqueOrThrow({
+  await prisma.user.findUniqueOrThrow({
     where: {
       id: payload.id,
+      isDeleted: false,
       status: UserStatus.ACTIVE,
     },
   });
@@ -179,7 +186,6 @@ const resetPassword = async (
     token,
     config.jwt.reset_pass_secret as Secret
   );
-
   if (!isValidToken) {
     throw new ApiError(httpStatus.FORBIDDEN, "Forbidden!");
   }
@@ -191,6 +197,8 @@ const resetPassword = async (
   await prisma.user.update({
     where: {
       id: payload.id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
     },
     data: {
       password,
@@ -203,5 +211,5 @@ export const AuthServices = {
   refreshToken,
   changePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
 };
