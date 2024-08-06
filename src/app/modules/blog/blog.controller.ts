@@ -7,8 +7,10 @@ import { blogFilterableFields, blogSearchAbleFields } from "./blog.constant";
 import { BlogService } from "./blog.service";
 
 const createBlog = catchAsync(async (req, res) => {
-  const user = (req as RequestWithUser)?.user;
-  const result = await BlogService.createBlogIntoDB(user, req.body);
+  const result = await BlogService.createBlogIntoDB(
+    (req as RequestWithUser)?.user,
+    req.body
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -18,76 +20,85 @@ const createBlog = catchAsync(async (req, res) => {
   });
 });
 
-const getAllBlogs = catchAsync(async (req, res) => {  
-    const filters = pick(req.query, blogFilterableFields);
-    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  
-    const result = await BlogService.getAllBlogsFromDB(filters, options);
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Blogs retrieved successfully!",
-      meta: result.meta,
-      data: result.data,
-    });
-  });
+const getAllBlogs = catchAsync(async (req, res) => {
+  const filters = pick(req.query, blogFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-const getMyBlogs = catchAsync(async (req, res) => {  
-    const filters = pick(req.query, blogSearchAbleFields);
-    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-    const user = (req as RequestWithUser)?.user;
-  
-    const result = await BlogService.getMyBlogsFromDB(filters, options, user);
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "My all blogs retrieved successfully!",
-      meta: result.meta,
-      data: result.data,
-    });
+  const result = await BlogService.getAllBlogsFromDB(filters, options);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Blogs retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
   });
+});
+
+const getMyBlogs = catchAsync(async (req, res) => {
+  const filters = pick(req.query, blogSearchAbleFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+
+  const result = await BlogService.getMyBlogsFromDB(
+    filters,
+    options,
+    (req as RequestWithUser)?.user
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "My all blogs retrieved successfully!",
+    meta: result.meta,
+    data: result.data,
+  });
+});
 
 const getABlog = catchAsync(async (req, res) => {
-  const { petId } = req.params;
-    const user = (req as RequestWithUser)?.user;
-  
-    const result = await BlogService.getABlogIntoDB(petId, user);
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "A blog retrieved successfully!",
-      data: result,
-    });
-  });
+  const { blogId } = req.params;
+  const result = await BlogService.getABlogIntoDB(
+    blogId,
+    (req as RequestWithUser)?.user
+  );
 
-  const updateABlog = catchAsync(async (req, res) => {
-    const { petId } = req.params;
-    const user = (req as RequestWithUser)?.user;
-    const result = await BlogService.updateBlogIntoDB(user, petId, req.body);
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Blog profile updated successfully!",
-      data: result,
-    });
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "A blog retrieved successfully!",
+    data: result,
   });
+});
 
-  const deleteABlog = catchAsync(async (req, res) => {
-    const { petId } = req.params;
-    const user = (req as RequestWithUser)?.user;
-    const result = await BlogService.deleteBlogIntoDB(user, petId);
-  
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: "Blog deleted successfully!",
-      data: result,
-    });
+const updateABlog = catchAsync(async (req, res) => {
+  const { blogId } = req.params;
+  const result = await BlogService.updateBlogIntoDB(
+    (req as RequestWithUser)?.user,
+    blogId,
+    req.body
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Blog profile updated successfully!",
+    data: result,
   });
+});
+
+const deleteABlog = catchAsync(async (req, res) => {
+  const { blogId } = req.params;
+  const result = await BlogService.deleteBlogIntoDB(
+    (req as RequestWithUser)?.user,
+    blogId
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Blog deleted successfully!",
+    data: result,
+  });
+});
 
 export const blogController = {
   createBlog,
@@ -95,5 +106,5 @@ export const blogController = {
   getMyBlogs,
   getABlog,
   updateABlog,
-  deleteABlog
+  deleteABlog,
 };

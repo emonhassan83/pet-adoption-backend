@@ -7,7 +7,7 @@ import { blogSearchAbleFields } from "./blog.constant";
 const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -97,7 +97,7 @@ const getMyBlogsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       author: {
-        id: userData.userId,
+        id: userData.id,
       },
     });
   }
@@ -163,7 +163,7 @@ const getMyBlogsFromDB = async (
 const getABlogIntoDB = async (blogId: string, userData: IUser) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -195,7 +195,7 @@ const updateBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -224,7 +224,7 @@ const updateBlogIntoDB = async (
 const deleteBlogIntoDB = async (userData: IUser, blogId: string): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },

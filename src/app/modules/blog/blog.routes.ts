@@ -9,28 +9,28 @@ const router = express.Router();
 
 router.post(
   "/add-blog",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   validateRequest(blogValidation.createBlogSchema),
   blogController.createBlog
 );
 
 router.get("/", blogController.getAllBlogs);
 
-router.get("/my-blogs", auth(UserRole.ADMIN), blogController.getMyBlogs);
+router.get("/my-blogs", auth(UserRole.SUPER_ADMIN, UserRole.ADMIN), blogController.getMyBlogs);
 
 router.get(
   "/:blogId",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
   blogController.getABlog
 );
 
 router.put(
   "/:blogId",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   validateRequest(blogValidation.updateBlogSchema),
   blogController.updateABlog
 );
 
-router.delete("/:blogId", auth(UserRole.ADMIN), blogController.deleteABlog);
+router.delete("/:blogId", auth(UserRole.SUPER_ADMIN, UserRole.ADMIN), blogController.deleteABlog);
 
 export const blogRoutes = router;
