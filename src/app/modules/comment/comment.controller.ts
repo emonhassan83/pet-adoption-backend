@@ -10,8 +10,7 @@ import {
 import { CommentService } from "./comment.service";
 
 const createComment = catchAsync(async (req, res) => {
-  const user = (req as RequestWithUser)?.user;
-  const result = await CommentService.createCommentIntoDB(user, req.body);
+  const result = await CommentService.createCommentIntoDB((req as RequestWithUser)?.user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -39,12 +38,11 @@ const getAllComment = catchAsync(async (req, res) => {
 const getMyComments = catchAsync(async (req, res) => {
   const filters = pick(req.query, commentSearchAbleFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const user = (req as RequestWithUser)?.user;
 
   const result = await CommentService.getMyCommentsFromDB(
     filters,
     options,
-    user
+    (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -58,9 +56,8 @@ const getMyComments = catchAsync(async (req, res) => {
 
 const getAComment = catchAsync(async (req, res) => {
   const { petId } = req.params;
-  const user = (req as RequestWithUser)?.user;
 
-  const result = await CommentService.getACommentIntoDB(petId, user);
+  const result = await CommentService.getACommentIntoDB(petId, (req as RequestWithUser)?.user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -72,9 +69,9 @@ const getAComment = catchAsync(async (req, res) => {
 
 const updateAComment = catchAsync(async (req, res) => {
   const { petId } = req.params;
-  const user = (req as RequestWithUser)?.user;
+
   const result = await CommentService.updateCommentIntoDB(
-    user,
+    (req as RequestWithUser)?.user,
     petId,
     req.body
   );
@@ -89,8 +86,8 @@ const updateAComment = catchAsync(async (req, res) => {
 
 const deleteAComment = catchAsync(async (req, res) => {
   const { petId } = req.params;
-  const user = (req as RequestWithUser)?.user;
-  const result = await CommentService.deleteCommentIntoDB(user, petId);
+  
+  const result = await CommentService.deleteCommentIntoDB((req as RequestWithUser)?.user, petId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

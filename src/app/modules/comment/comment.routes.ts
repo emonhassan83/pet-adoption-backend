@@ -9,28 +9,32 @@ const router = express.Router();
 
 router.post(
   "/",
-  auth(UserRole.ADMIN),
+  auth(UserRole.USER),
   validateRequest(commentValidation.createCommentSchema),
   commentController.createComment
 );
 
 router.get("/", commentController.getAllComment);
 
-router.get("/my-comments", auth(UserRole.ADMIN), commentController.getMyComments);
-
 router.get(
-  "/:commentId",
-  auth(UserRole.ADMIN, UserRole.USER),
-  commentController.getAComment
+  "/my-comments",
+  auth(UserRole.USER),
+  commentController.getMyComments
 );
+
+router.get("/:commentId", auth(UserRole.USER), commentController.getAComment);
 
 router.put(
   "/:commentId",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
   validateRequest(commentValidation.updateCommentSchema),
   commentController.updateAComment
 );
 
-router.delete("/:commentId", auth(UserRole.ADMIN), commentController.deleteAComment);
+router.delete(
+  "/:commentId",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
+  commentController.deleteAComment
+);
 
 export const commentRoutes = router;

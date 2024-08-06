@@ -221,6 +221,7 @@ const updateBlogIntoDB = async (
   return result;
 };
 
+//! TODO: use transition here comment model
 const deleteBlogIntoDB = async (userData: IUser, blogId: string): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
