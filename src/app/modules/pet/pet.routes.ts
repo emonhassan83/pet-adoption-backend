@@ -9,28 +9,36 @@ const router = express.Router();
 
 router.post(
   "/",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   validateRequest(petValidation.createPet),
   petController.createPet
 );
 
 router.get("/", petController.getAllPets);
 
-router.get("/my-pets", auth(UserRole.ADMIN), petController.getMyPets);
+router.get(
+  "/my-pets",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  petController.getMyPets
+);
 
 router.get(
   "/:petId",
-  // auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.ADMIN, UserRole.USER),
   petController.getAPet
 );
 
 router.put(
   "/:petId",
-  auth(UserRole.ADMIN),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   validateRequest(petValidation.updatePet),
   petController.updateAPet
 );
 
-router.delete("/:petId", auth(UserRole.ADMIN), petController.deleteAPet);
+router.delete(
+  "/:petId",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  petController.deleteAPet
+);
 
 export const petRoutes = router;

@@ -49,20 +49,48 @@ const createPet = z.object({
 
 const updatePet = z.object({
   body: z.object({
-    name: z.string().optional(),
-    image: z.string().optional(),
-    species: z.string().optional(),
-    breed: z.string().optional(),
-    color: z.string().optional(),
-    age: z.number().optional(),
-    gender: z.string().optional(),
-    size: z.string().optional(),
-    location: z.string().optional(),
-    description: z.string().optional(),
-    temperament: z.string().optional(),
-    medicalHistory: z.string().optional(),
-    healthStatus: z.string().optional(),
-    adoptionRequirements: z.string().optional(),
+    name: z.string({
+      required_error: "Name is required!",
+    }).optional(),
+    image: z.string({
+      required_error: "Image is required!",
+    }).optional(),
+    species: z.string({
+      required_error: "Species is required!",
+    }).optional(),
+    breed: z.string({
+      required_error: "Breed is required!",
+    }).optional(),
+    color: z.string({
+      required_error: "Color is required!",
+    }).optional(),
+    age: z.number({
+      required_error: "Age is required!",
+    }).optional(),
+    gender: z.string({
+      required_error: "Gender is required!",
+    }).optional(),
+    size: z.string({
+      required_error: "Size is required!",
+    }).optional(),
+    location: z.string({
+      required_error: "Location is required!",
+    }).optional(),
+    description: z.string({
+      required_error: "Description is required!",
+    }).optional(),
+    temperament: z.string({
+      required_error: "Temperament is required!",
+    }).optional(),
+    medicalHistory: z.string({
+      required_error: "Medical History is required!",
+    }).optional(),
+    healthStatus: z.string({
+      required_error: "Health status is required!",
+    }).optional(),
+    adoptionRequirements: z.string({
+      required_error: "Adoption Requirements is required!",
+    }).optional(),
   }),
 });
 

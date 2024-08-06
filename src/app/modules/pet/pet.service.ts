@@ -7,7 +7,7 @@ import { petSearchAbleFields } from "./pet.constant";
 const createPetIntoDB = async (userData: IUser, petData: any): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -98,7 +98,7 @@ const getMyPetsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       user: {
-        id: userData.userId,
+        id: userData.id,
       },
     });
   }
@@ -162,13 +162,13 @@ const getMyPetsFromDB = async (
 };
 
 const getAIntoDB = async (petId: string, userData: IUser) => {
-  // await prisma.user.findUniqueOrThrow({
-  //   where: {
-  //     id: userData?.userId,
-  //     isDeleted: false,
-  //     status: UserStatus.ACTIVE,
-  //   },
-  // });
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
+    },
+  });
 
   await prisma.pet.findUniqueOrThrow({
     where: {
@@ -196,7 +196,7 @@ const updateIntoDB = async (
 ): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -222,10 +222,11 @@ const updateIntoDB = async (
   return result;
 };
 
+//! Todo: use transcript use here 
 const deleteIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
