@@ -7,8 +7,7 @@ import { donateFilterableFields, donateSearchAbleFields } from "./donate.constan
 import { DonationService } from "./donate.service";
 
 const  createDonation = catchAsync(async (req, res) => {
-  const user = (req as RequestWithUser)?.user;
-  const result = await DonationService.createDonationIntoDB(user, req.body);
+  const result = await DonationService.createDonationIntoDB((req as RequestWithUser)?.user, req.body);
 
   sendResponse(res, {
     statusCode: httpStatus.CREATED,
@@ -36,12 +35,11 @@ const getAllDonation = catchAsync(async (req, res) => {
 const getDonationsByUser = catchAsync(async (req, res) => {
   const filters = pick(req.query, donateSearchAbleFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const user = (req as RequestWithUser)?.user;
 
   const result = await DonationService.getUserDonationsFromDB(
     filters,
     options,
-    user
+    (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -56,12 +54,11 @@ const getDonationsByUser = catchAsync(async (req, res) => {
 const getDonationsByPet = catchAsync(async (req, res) => {
   const filters = pick(req.query, donateSearchAbleFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const user = (req as RequestWithUser)?.user;
 
   const result = await DonationService.getPetDonationsFromDB(
     filters,
     options,
-    user
+    (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -75,9 +72,8 @@ const getDonationsByPet = catchAsync(async (req, res) => {
 
 const getADonation = catchAsync(async (req, res) => {
   const { donateId } = req.params;
-  const user = (req as RequestWithUser)?.user;
 
-  const result = await DonationService.getADonationIntoDB(donateId, user);
+  const result = await DonationService.getADonationIntoDB(donateId, (req as RequestWithUser)?.user);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -89,9 +85,9 @@ const getADonation = catchAsync(async (req, res) => {
 
 const updateADonate = catchAsync(async (req, res) => {
   const { donateId } = req.params;
-  const user = (req as RequestWithUser)?.user;
+ 
   const result = await DonationService.updateDonationIntoDB(
-    user,
+    (req as RequestWithUser)?.user,
     donateId,
     req.body
   );
@@ -106,8 +102,8 @@ const updateADonate = catchAsync(async (req, res) => {
 
 const deleteADonate = catchAsync(async (req, res) => {
   const { donateId } = req.params;
-  const user = (req as RequestWithUser)?.user;
-  const result = await DonationService.deleteDonationIntoDB(user, donateId);
+  
+  const result = await DonationService.deleteDonationIntoDB((req as RequestWithUser)?.user, donateId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

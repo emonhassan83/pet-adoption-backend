@@ -8,11 +8,11 @@ const createDonationIntoDB = async (
   userData: IUser,
   donationData: any
 ): Promise<Donation> => {
-  const { petId, userId } = donationData;
+  const { petId } = donationData;
 
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -111,7 +111,7 @@ const getUserDonationsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       user: {
-        id: userData.userId,
+        id: userData.id,
       },
     });
   }
@@ -187,7 +187,7 @@ const getPetDonationsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       user: {
-        id: userData.userId,
+        id: userData.id,
       },
     });
   }
@@ -253,7 +253,7 @@ const getPetDonationsFromDB = async (
 const getADonationIntoDB = async (donateId: string, userData: IUser) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -285,7 +285,7 @@ const updateDonationIntoDB = async (
 ): Promise<Donation> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -317,7 +317,7 @@ const deleteDonationIntoDB = async (
 ): Promise<Donation> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
+      id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
