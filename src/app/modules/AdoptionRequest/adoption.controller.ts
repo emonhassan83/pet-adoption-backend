@@ -7,9 +7,8 @@ import pick from "../../../shared/pick";
 import { adoptFilterableFields } from "./adoption.constant";
 
 const createAdoptionRequest = catchAsync(async (req, res) => {
-  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.createIntoDB(
-    user,
+    (req as RequestWithUser)?.user,
     req.body
   );
 
@@ -24,10 +23,9 @@ const createAdoptionRequest = catchAsync(async (req, res) => {
 const getAllAdoptionRequest = catchAsync(async (req, res) => {
   const filters = pick(req.query, adoptFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const user = (req as RequestWithUser)?.user;
 
   const result = await adoptionRequestService.getAllFromDB(
-    filters, options, user
+    filters, options, (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -42,10 +40,9 @@ const getAllAdoptionRequest = catchAsync(async (req, res) => {
 const getMyAdoptionRequest = catchAsync(async (req, res) => {
   const filters = pick(req.query, adoptFilterableFields);
   const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  const user = (req as RequestWithUser)?.user;
 
   const result = await adoptionRequestService.getMyAllFromDB(
-    filters, options, user 
+    filters, options, (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -59,12 +56,10 @@ const getMyAdoptionRequest = catchAsync(async (req, res) => {
 
 const updateAAdoptionRequest = catchAsync(async (req, res) => {
   const { requestId } = req.params;
-
-  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.updateIntoDB(
     requestId,
     req.body,
-    user
+    (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -77,12 +72,10 @@ const updateAAdoptionRequest = catchAsync(async (req, res) => {
 
 const updateAdoptionRequestStatus = catchAsync(async (req, res) => {
   const { requestId } = req.params;
-
-  const user = (req as RequestWithUser)?.user;
   const result = await adoptionRequestService.updateIntoDB(
     requestId,
     req.body,
-    user
+    (req as RequestWithUser)?.user
   );
 
   sendResponse(res, {
@@ -95,8 +88,7 @@ const updateAdoptionRequestStatus = catchAsync(async (req, res) => {
 
 const deleteAAdoptionRequest = catchAsync(async (req, res) => {
   const { requestId } = req.params;
-  const user = (req as RequestWithUser)?.user;
-  const result = await adoptionRequestService.deleteIntoDB(user, requestId);
+  const result = await adoptionRequestService.deleteIntoDB((req as RequestWithUser)?.user, requestId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

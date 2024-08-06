@@ -9,40 +9,40 @@ const router = express.Router();
 
 router.post(
   "/",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.USER),
   validateRequest(adoptionRequestSchema.createAdoptionRequest),
   adoptionRequestController.createAdoptionRequest
 );
 
 router.get(
   "/",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
   adoptionRequestController.getAllAdoptionRequest
 );
 
 router.get(
   "/my-adoption",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.USER),
   adoptionRequestController.getMyAdoptionRequest
 );
 
 router.put(
   "/:requestId",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.USER),
   validateRequest(adoptionRequestSchema.updateAdoptionRequest),
   adoptionRequestController.updateAAdoptionRequest
 );
 
 router.patch(
   "/:requestId/status",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   validateRequest(adoptionRequestSchema.updateAdoptionRequestStatus),
   adoptionRequestController.updateAdoptionRequestStatus
 );
 
 router.delete(
   "/:requestId",
-  auth(UserRole.ADMIN, UserRole.USER),
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
   adoptionRequestController.deleteAAdoptionRequest
 );
 
