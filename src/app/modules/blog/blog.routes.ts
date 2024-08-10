@@ -14,6 +14,12 @@ router.post(
   blogController.createBlog
 );
 
+router.patch(
+  "/published-blog/:blogId",
+  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
+  blogController.publishedBlog
+);
+
 router.get("/", blogController.getAllBlogs);
 
 router.get("/my-blogs", auth(UserRole.SUPER_ADMIN, UserRole.ADMIN), blogController.getMyBlogs);

@@ -31,7 +31,7 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
       OR: petSearchAbleFields.map((field) => ({
         [field]: {
           contains: searchTerm,
-          mode: 'insensitive',
+          mode: "insensitive",
         },
       })),
     });
@@ -62,7 +62,7 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
             [options.sortBy]: options.sortOrder,
           }
         : {
-            createdAt: 'asc',
+            createdAt: "asc",
           },
     include: {
       user: true,
@@ -83,7 +83,6 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
     data: result,
   };
 };
-
 
 const getMyPetsFromDB = async (
   params: any,
@@ -141,10 +140,10 @@ const getMyPetsFromDB = async (
         : {
             createdAt: "asc",
           },
-          include: {
-            user: true,
-            adoptionRequest: true,
-          }
+    include: {
+      user: true,
+      adoptionRequest: true,
+    },
   });
 
   const total = await prisma.pet.count({
@@ -173,7 +172,7 @@ const getAIntoDB = async (petId: string, userData: IUser) => {
   await prisma.pet.findUniqueOrThrow({
     where: {
       id: petId,
-    }
+    },
   });
 
   const result = await prisma.pet.findUnique({
@@ -183,7 +182,7 @@ const getAIntoDB = async (petId: string, userData: IUser) => {
     include: {
       user: true,
       adoptionRequest: true,
-    }
+    },
   });
 
   return result;
@@ -216,13 +215,12 @@ const updateIntoDB = async (
     include: {
       user: true,
       adoptionRequest: true,
-    }
+    },
   });
 
   return result;
 };
 
-//! Todo: use transcript use here 
 const deleteIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
@@ -238,13 +236,21 @@ const deleteIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
     },
   });
 
-  const result = await prisma.pet.delete({
-    where: {
-      id: petId,
-    },
-  });
+  return await prisma.$transaction(async (transactionClient) => {
+    const deletePet = await transactionClient.pet.delete({
+      where: {
+        id: petId,
+      },
+    });
 
-  return result;
+    //* delete adoption request
+    await transactionClient.adoptionRequest.deleteMany({
+      where: {
+        petId: petId,
+      },
+    });
+    return deletePet;
+  });
 };
 
 export const PetService = {

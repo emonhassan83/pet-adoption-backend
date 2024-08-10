@@ -1,10 +1,13 @@
-import { Blog, Pet, Prisma, UserStatus } from "@prisma/client";
+import { Blog, BlogStatus, Pet, Prisma, UserStatus } from "@prisma/client";
 import prisma from "../../../shared/prisma";
 import { paginationHelper } from "../../../helpers/paginationHelper";
 import { IPaginationOptions, IUser } from "../../interfaces";
 import { blogSearchAbleFields } from "./blog.constant";
 
-const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Blog> => {
+const createBlogIntoDB = async (
+  userData: IUser,
+  blogData: any
+): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.id,
@@ -15,6 +18,30 @@ const createBlogIntoDB = async (userData: IUser, blogData: any): Promise<Blog> =
 
   const result = await prisma.blog.create({
     data: blogData,
+  });
+
+  return result;
+};
+
+const publishedBlogIntoDB = async (
+  userData: IUser,
+  blogId: string
+): Promise<Blog> => {
+  await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userData?.id,
+      isDeleted: false,
+      status: UserStatus.ACTIVE,
+    },
+  });
+
+  const result = await prisma.blog.update({
+    where: {
+      id: blogId,
+    },
+    data: {
+      status: BlogStatus.PUBLISHED,
+    },
   });
 
   return result;
@@ -31,7 +58,7 @@ const getAllBlogsFromDB = async (params: any, options: IPaginationOptions) => {
       OR: blogSearchAbleFields.map((field) => ({
         [field]: {
           contains: searchTerm,
-          mode: 'insensitive',
+          mode: "insensitive",
         },
       })),
     });
@@ -62,7 +89,7 @@ const getAllBlogsFromDB = async (params: any, options: IPaginationOptions) => {
             [options.sortBy]: options.sortOrder,
           }
         : {
-            publishedAt: 'asc',
+            publishedAt: "asc",
           },
     include: {
       author: true,
@@ -140,10 +167,10 @@ const getMyBlogsFromDB = async (
         : {
             publishedAt: "asc",
           },
-          include: {
-            author: true,
-          comment: true,
-          }
+    include: {
+      author: true,
+      comment: true,
+    },
   });
 
   const total = await prisma.blog.count({
@@ -172,7 +199,7 @@ const getABlogIntoDB = async (blogId: string, userData: IUser) => {
   await prisma.blog.findUniqueOrThrow({
     where: {
       id: blogId,
-    }
+    },
   });
 
   const result = await prisma.blog.findUnique({
@@ -182,7 +209,7 @@ const getABlogIntoDB = async (blogId: string, userData: IUser) => {
     include: {
       author: true,
       comment: true,
-    }
+    },
   });
 
   return result;
@@ -215,14 +242,16 @@ const updateBlogIntoDB = async (
     include: {
       author: true,
       comment: true,
-    }
+    },
   });
 
   return result;
 };
 
-//! TODO: use transition here comment model
-const deleteBlogIntoDB = async (userData: IUser, blogId: string): Promise<Blog> => {
+const deleteBlogIntoDB = async (
+  userData: IUser,
+  blogId: string
+): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.id,
@@ -237,17 +266,26 @@ const deleteBlogIntoDB = async (userData: IUser, blogId: string): Promise<Blog> 
     },
   });
 
-  const result = await prisma.blog.delete({
-    where: {
-      id: blogId,
-    },
-  });
+  return await prisma.$transaction(async (transactionClient) => {
+    const deleteBlog = await prisma.blog.delete({
+      where: {
+        id: blogId,
+      },
+    });
 
-  return result;
+    //* delete blog comment
+    await transactionClient.comment.deleteMany({
+      where: {
+        blogId: blogId,
+      },
+    });
+    return deleteBlog;
+  });
 };
 
 export const BlogService = {
   createBlogIntoDB,
+  publishedBlogIntoDB,
   getAllBlogsFromDB,
   getMyBlogsFromDB,
   getABlogIntoDB,
