@@ -8,19 +8,11 @@ const createDonationIntoDB = async (
   userData: IUser,
   donationData: any
 ): Promise<Donation> => {
-  const { petId } = donationData;
-
   await prisma.user.findUniqueOrThrow({
     where: {
       id: userData?.id,
       isDeleted: false,
       status: UserStatus.ACTIVE,
-    },
-  });
-
-  await prisma.pet.findUniqueOrThrow({
-    where: {
-      id: petId,
     },
   });
 
@@ -80,7 +72,6 @@ const getAllDonationsFromDB = async (
           },
     include: {
       user: true,
-      pet: true,
     },
   });
 
@@ -155,84 +146,7 @@ const getUserDonationsFromDB = async (
             donatedAt: "asc",
           },
     include: {
-      user: true,
-      pet: true,
-    },
-  });
-
-  const total = await prisma.donation.count({
-    where: whereConditions,
-  });
-
-  return {
-    meta: {
-      page,
-      limit,
-      total,
-    },
-    data: result,
-  };
-};
-
-const getPetDonationsFromDB = async (
-  params: any,
-  options: IPaginationOptions,
-  userData: IUser
-) => {
-  const { page, limit, skip } = paginationHelper.calculatePagination(options);
-  const { searchTerm, ...filterData } = params;
-
-  const andConditions: Prisma.DonationWhereInput[] = [];
-
-  if (userData?.role) {
-    andConditions.push({
-      user: {
-        id: userData.id,
-      },
-    });
-  }
-
-  if (params.searchTerm) {
-    andConditions.push({
-      OR: donateSearchAbleFields.map((field) => ({
-        [field]: {
-          contains: params.searchTerm,
-          mode: "insensitive",
-        },
-      })),
-    });
-  }
-
-  if (Object.keys(filterData).length > 0) {
-    andConditions.push({
-      AND: Object.keys(filterData).map((key) => ({
-        [key]: {
-          equals: (filterData as any)[key],
-        },
-      })),
-    });
-  }
-
-  const whereConditions: Prisma.DonationWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
-
-  // console.dir(whereConditions, {depth: Infinity});
-
-  const result = await prisma.donation.findMany({
-    where: whereConditions,
-    skip,
-    take: limit,
-    orderBy:
-      options.sortBy && options.sortOrder
-        ? {
-            [options.sortBy]: options.sortOrder,
-          }
-        : {
-            donatedAt: "asc",
-          },
-    include: {
-      user: true,
-      pet: true,
+      user: true
     },
   });
 
@@ -270,8 +184,7 @@ const getADonationIntoDB = async (donateId: string, userData: IUser) => {
       id: donateId,
     },
     include: {
-      user: true,
-      pet: true,
+      user: true
     },
   });
 
@@ -303,8 +216,7 @@ const updateDonationIntoDB = async (
     },
     data,
     include: {
-      user: true,
-      pet: true,
+      user: true
     },
   });
 
@@ -342,7 +254,6 @@ export const DonationService = {
   createDonationIntoDB,
   getAllDonationsFromDB,
   getUserDonationsFromDB,
-  getPetDonationsFromDB,
   getADonationIntoDB,
   updateDonationIntoDB,
   deleteDonationIntoDB,

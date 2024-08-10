@@ -33,7 +33,7 @@ const updateUser = z.object({
         required_error: "Email is required!",
       })
       .optional(),
-      profilePhoto: z
+    profilePhoto: z
       .string({
         required_error: "Profile photo is required!",
       })
@@ -59,7 +59,7 @@ const updateStatus = z.object({
 
 const updateRole = z.object({
   body: z.object({
-    role: z.enum([UserRole.ADMIN, UserRole.USER]),
+    role: z.enum([UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER]),
   }),
 });
 

@@ -51,25 +51,6 @@ const getDonationsByUser = catchAsync(async (req, res) => {
   });
 });
 
-const getDonationsByPet = catchAsync(async (req, res) => {
-  const filters = pick(req.query, donateSearchAbleFields);
-  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-
-  const result = await DonationService.getPetDonationsFromDB(
-    filters,
-    options,
-    (req as RequestWithUser)?.user
-  );
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: "Get donations pet retrieved successfully!",
-    meta: result.meta,
-    data: result.data,
-  });
-});
-
 const getADonation = catchAsync(async (req, res) => {
   const { donateId } = req.params;
 
@@ -117,7 +98,6 @@ export const donateController = {
     createDonation,
     getAllDonation,
     getDonationsByUser,
-    getDonationsByPet,
     getADonation,
     updateADonate,
     deleteADonate,

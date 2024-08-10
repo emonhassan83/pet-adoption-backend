@@ -23,12 +23,6 @@ router.get(
 );
 
 router.get(
-  "/pet-donations",
-  auth(UserRole.SUPER_ADMIN, UserRole.ADMIN),
-  donateController.getDonationsByPet
-);
-
-router.get(
   "/:donateId",
   auth(UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.USER),
   donateController.getADonation

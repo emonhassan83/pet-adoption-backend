@@ -55,7 +55,6 @@ model Pet {
   userId          String
   user            User              @relation(fields: [userId], references: [id])
   adoptionRequest AdoptionRequest[]
-  donation        Donation[]
 
   @@map("pets")
 }
@@ -91,7 +90,7 @@ model Blog {
   tags        String[]
   category    String
   status      BlogStatus @default(DRAFT)
-  views       Int        @default(0)
+  like       Int        @default(0)
   publishedAt DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
@@ -121,7 +120,6 @@ model Comment {
 model Donation {
   id         String   @id @default(uuid())
   amount     Float
-  currency   String
   donorName  String
   donorEmail String
   message    String?
@@ -131,8 +129,6 @@ model Donation {
   //* Define relationships
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
-  petId  String?
-  pet    Pet?    @relation(fields: [petId], references: [id])
 
   @@map("donations")
 }
