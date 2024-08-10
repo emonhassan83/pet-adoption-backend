@@ -10,7 +10,7 @@ const createBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -29,7 +29,7 @@ const publishedBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -124,7 +124,7 @@ const getMyBlogsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       author: {
-        id: userData.id,
+        id: userData.userId,
       },
     });
   }
@@ -190,7 +190,7 @@ const getMyBlogsFromDB = async (
 const getABlogIntoDB = async (blogId: string, userData: IUser) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -222,7 +222,7 @@ const updateBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -254,7 +254,7 @@ const deleteBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },

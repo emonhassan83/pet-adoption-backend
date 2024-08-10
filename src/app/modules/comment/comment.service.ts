@@ -12,7 +12,7 @@ const createCommentIntoDB = async (
 
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -114,7 +114,7 @@ const getMyCommentsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       author: {
-        id: userData.id,
+        id: userData.userId,
       },
     });
   }
@@ -180,7 +180,7 @@ const getMyCommentsFromDB = async (
 const getACommentIntoDB = async (commentId: string, userData: IUser) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -212,7 +212,7 @@ const updateCommentIntoDB = async (
 ): Promise<Comment> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -244,7 +244,7 @@ const deleteCommentIntoDB = async (
 ): Promise<Comment> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },

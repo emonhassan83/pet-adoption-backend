@@ -14,7 +14,7 @@ const createIntoDB = async (
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       status: UserStatus.ACTIVE,
       isDeleted: false,
     },
@@ -27,7 +27,7 @@ const createIntoDB = async (
   });
 
   const adaptionData = {
-    userId: userData?.id,
+    userId: userData?.userId,
     ...data,
   };
 
@@ -45,7 +45,7 @@ const getAllFromDB = async (
 ) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       status: UserStatus.ACTIVE,
       isDeleted: false,
     },
@@ -108,7 +108,7 @@ const getMyAllFromDB = async (
 ) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       status: UserStatus.ACTIVE,
       isDeleted: false,
     },
@@ -122,7 +122,7 @@ const getMyAllFromDB = async (
   if (userData?.role) {
     andConditions.push({
       user: {
-        id: userData.id,
+        id: userData.userId,
       },
     });
   }
@@ -179,7 +179,7 @@ const updateIntoDB = async (
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       status: UserStatus.ACTIVE,
       isDeleted: false,
     },
@@ -212,7 +212,7 @@ const updateStatusIntoDB = async (
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       status: UserStatus.ACTIVE,
       isDeleted: false,
     },
@@ -246,7 +246,7 @@ const deleteIntoDB = async (
 ): Promise<AdoptionRequest> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },

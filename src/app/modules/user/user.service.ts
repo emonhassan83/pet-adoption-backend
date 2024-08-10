@@ -109,7 +109,7 @@ const getMyProfileFromDB = async (
 ): Promise<IUserResponseData | null> => {
   const result = await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -138,7 +138,7 @@ const updateProfileIntoDB = async (
 ): Promise<IUserResponseData> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -146,7 +146,7 @@ const updateProfileIntoDB = async (
 
   const result = await prisma.user.update({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },

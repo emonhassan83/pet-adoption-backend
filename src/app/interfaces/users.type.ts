@@ -23,7 +23,7 @@ export type IUserData = {
 };
 
 export type IUser = {
-  id: string;
+  userId: string;
   email: string;
   role: UserRole;
   iat: number;

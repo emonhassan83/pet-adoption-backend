@@ -7,7 +7,7 @@ import { petSearchAbleFields } from "./pet.constant";
 const createPetIntoDB = async (userData: IUser, petData: any): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -97,7 +97,7 @@ const getMyPetsFromDB = async (
   if (userData?.role) {
     andConditions.push({
       user: {
-        id: userData.id,
+        id: userData.userId,
       },
     });
   }
@@ -163,7 +163,7 @@ const getMyPetsFromDB = async (
 const getAIntoDB = async (petId: string, userData: IUser) => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
@@ -195,11 +195,12 @@ const updateIntoDB = async (
 ): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
   });
+  
 
   await prisma.pet.findUniqueOrThrow({
     where: {
@@ -214,7 +215,6 @@ const updateIntoDB = async (
     data,
     include: {
       user: true,
-      adoptionRequest: true,
     },
   });
 
@@ -224,7 +224,7 @@ const updateIntoDB = async (
 const deleteIntoDB = async (userData: IUser, petId: string): Promise<Pet> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.id,
+      id: userData?.userId,
       isDeleted: false,
       status: UserStatus.ACTIVE,
     },
