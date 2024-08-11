@@ -20,8 +20,7 @@ const adoption_service_1 = require("./adoption.service");
 const pick_1 = __importDefault(require("../../../shared/pick"));
 const adoption_constant_1 = require("./adoption.constant");
 const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.createIntoDB(user, req.body);
+    const result = yield adoption_service_1.adoptionRequestService.createIntoDB(req === null || req === void 0 ? void 0 : req.user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -32,8 +31,7 @@ const createAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
 const getAllAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const filters = (0, pick_1.default)(req.query, adoption_constant_1.adoptFilterableFields);
     const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.getAllFromDB(filters, options, user);
+    const result = yield adoption_service_1.adoptionRequestService.getAllFromDB(filters, options, req === null || req === void 0 ? void 0 : req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -45,8 +43,7 @@ const getAllAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(
 const getMyAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const filters = (0, pick_1.default)(req.query, adoption_constant_1.adoptFilterableFields);
     const options = (0, pick_1.default)(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.getMyAllFromDB(filters, options, user);
+    const result = yield adoption_service_1.adoptionRequestService.getMyAllFromDB(filters, options, req === null || req === void 0 ? void 0 : req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -57,8 +54,7 @@ const getMyAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(v
 }));
 const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, user);
+    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, req === null || req === void 0 ? void 0 : req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -68,8 +64,7 @@ const updateAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter
 }));
 const updateAdoptionRequestStatus = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, user);
+    const result = yield adoption_service_1.adoptionRequestService.updateIntoDB(requestId, req.body, req === null || req === void 0 ? void 0 : req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -79,8 +74,7 @@ const updateAdoptionRequestStatus = (0, catchAsync_1.default)((req, res) => __aw
 }));
 const deleteAAdoptionRequest = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { requestId } = req.params;
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield adoption_service_1.adoptionRequestService.deleteIntoDB(user, requestId);
+    const result = yield adoption_service_1.adoptionRequestService.deleteIntoDB(req === null || req === void 0 ? void 0 : req.user, requestId);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,

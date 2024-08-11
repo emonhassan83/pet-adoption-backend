@@ -29,15 +29,15 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const user_constant_1 = require("./user.constant");
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const createUser = (req) => __awaiter(void 0, void 0, void 0, function* () {
-    const hashedPassword = yield bcrypt_1.default.hash(req.body.password, 12);
+const createUser = (user) => __awaiter(void 0, void 0, void 0, function* () {
+    const hashedPassword = yield bcrypt_1.default.hash(user.password, 12);
     const userData = {
-        name: req.body.name,
-        email: req.body.email,
+        name: user.name,
+        email: user.email,
         password: hashedPassword,
         role: client_1.UserRole.USER,
-        contactNumber: req.body.contactNumber,
-        address: req.body.address,
+        contactNumber: user.contactNumber,
+        address: user.address,
     };
     const result = yield prisma_1.default.user.create({
         data: userData,
@@ -91,10 +91,10 @@ const getAllFromDB = (params, options) => __awaiter(void 0, void 0, void 0, func
             gender: true,
             isDeleted: true,
             status: true,
-            createdAt: true,
-            updatedAt: true,
-            adoptionRequest: true,
-            pet: true,
+            // createdAt: true,
+            // updatedAt: true,
+            // adoptionRequest: true,
+            // pet: true,
         },
     });
     const total = yield prisma_1.default.user.count({
@@ -114,6 +114,7 @@ const getMyProfileFromDB = (userData) => __awaiter(void 0, void 0, void 0, funct
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
             isDeleted: false,
+            status: client_1.UserStatus.ACTIVE,
         },
         select: {
             id: true,
@@ -128,8 +129,6 @@ const getMyProfileFromDB = (userData) => __awaiter(void 0, void 0, void 0, funct
             gender: true,
             createdAt: true,
             updatedAt: true,
-            adoptionRequest: true,
-            pet: true,
         },
     });
     return result;
@@ -138,6 +137,8 @@ const updateProfileIntoDB = (userData, data) => __awaiter(void 0, void 0, void 0
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE,
         },
     });
     const result = yield prisma_1.default.user.update({
@@ -160,8 +161,6 @@ const updateProfileIntoDB = (userData, data) => __awaiter(void 0, void 0, void 0
             status: true,
             createdAt: true,
             updatedAt: true,
-            adoptionRequest: true,
-            pet: true,
         },
     });
     return result;
@@ -177,6 +176,8 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
     const updateUserRole = yield prisma_1.default.user.update({
         where: {
             id,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE,
         },
         data: role,
         select: {
@@ -192,8 +193,6 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
             status: true,
             createdAt: true,
             updatedAt: true,
-            adoptionRequest: true,
-            pet: true,
         },
     });
     return updateUserRole;
@@ -201,7 +200,7 @@ const changeUserRole = (id, role) => __awaiter(void 0, void 0, void 0, function*
 const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
-            id
+            id,
         },
     });
     const updateUserStatus = yield prisma_1.default.user.update({
@@ -222,11 +221,26 @@ const changeUserStatus = (id, status) => __awaiter(void 0, void 0, void 0, funct
             status: true,
             createdAt: true,
             updatedAt: true,
-            adoptionRequest: true,
-            pet: true,
         },
     });
     return updateUserStatus;
+});
+const softDelete = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id,
+        },
+    });
+    const userSoftDelete = yield prisma_1.default.user.update({
+        where: {
+            id,
+        },
+        data: {
+            isDeleted: true,
+            status: client_1.UserStatus.DELETED,
+        },
+    });
+    return userSoftDelete;
 });
 exports.userService = {
     createUser,
@@ -235,4 +249,5 @@ exports.userService = {
     updateProfileIntoDB,
     changeUserRole,
     changeUserStatus,
+    softDelete,
 };

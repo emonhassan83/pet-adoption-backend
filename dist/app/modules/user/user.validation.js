@@ -58,7 +58,7 @@ const updateStatus = zod_1.z.object({
 });
 const updateRole = zod_1.z.object({
     body: zod_1.z.object({
-        role: zod_1.z.enum([client_1.UserRole.ADMIN, client_1.UserRole.USER]),
+        role: zod_1.z.enum([client_1.UserRole.SUPER_ADMIN, client_1.UserRole.ADMIN, client_1.UserRole.USER]),
     }),
 });
 exports.userValidation = {

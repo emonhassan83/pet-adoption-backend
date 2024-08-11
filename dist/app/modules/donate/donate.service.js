@@ -23,12 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PetService = void 0;
+exports.DonationService = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const pet_constant_1 = require("./pet.constant");
-const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0, function* () {
+const donate_constant_1 = require("./donate.constant");
+const createDonationIntoDB = (userData, donationData) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -36,18 +36,18 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    const result = yield prisma_1.default.pet.create({
-        data: petData,
+    const result = yield prisma_1.default.donation.create({
+        data: donationData,
     });
     return result;
 });
-const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllDonationsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: donate_constant_1.donateSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive",
@@ -66,7 +66,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, { depth: Infinity });
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.donation.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -75,14 +75,13 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
                 [options.sortBy]: options.sortOrder,
             }
             : {
-                createdAt: "asc",
+                donatedAt: "asc",
             },
         include: {
             user: true,
-            adoptionRequest: true,
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.donation.count({
         where: whereConditions,
     });
     return {
@@ -94,7 +93,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         data: result,
     };
 });
-const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserDonationsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
@@ -107,7 +106,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
     }
     if (params.searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: donate_constant_1.donateSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: params.searchTerm,
                     mode: "insensitive",
@@ -126,7 +125,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, {depth: Infinity});
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.donation.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -135,14 +134,13 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
                 [options.sortBy]: options.sortOrder,
             }
             : {
-                createdAt: "asc",
+                donatedAt: "asc",
             },
         include: {
-            user: true,
-            adoptionRequest: true,
+            user: true
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.donation.count({
         where: whereConditions,
     });
     return {
@@ -154,7 +152,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
         data: result,
     };
 });
-const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getADonationIntoDB = (donateId, userData) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -162,23 +160,22 @@ const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, functi
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.donation.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: donateId,
         },
     });
-    const result = yield prisma_1.default.pet.findUnique({
+    const result = yield prisma_1.default.donation.findUnique({
         where: {
-            id: petId,
+            id: donateId,
         },
         include: {
-            user: true,
-            adoptionRequest: true,
+            user: true
         },
     });
     return result;
 });
-const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateDonationIntoDB = (userData, donateId, data) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -186,23 +183,23 @@ const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.donation.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: donateId,
         },
     });
-    const result = yield prisma_1.default.pet.update({
+    const result = yield prisma_1.default.donation.update({
         where: {
-            id: petId,
+            id: donateId,
         },
         data,
         include: {
-            user: true,
+            user: true
         },
     });
     return result;
 });
-const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteDonationIntoDB = (userData, donateId) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -210,31 +207,23 @@ const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, func
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.donation.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: donateId,
         },
     });
-    return yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
-        const deletePet = yield transactionClient.pet.delete({
-            where: {
-                id: petId,
-            },
-        });
-        //* delete adoption request
-        yield transactionClient.adoptionRequest.deleteMany({
-            where: {
-                petId: petId,
-            },
-        });
-        return deletePet;
-    }));
+    const result = yield prisma_1.default.donation.delete({
+        where: {
+            id: donateId,
+        },
+    });
+    return result;
 });
-exports.PetService = {
-    createPetIntoDB,
-    getAllPetsFromDB,
-    getMyPetsFromDB,
-    getAIntoDB,
-    updateIntoDB,
-    deleteIntoDB,
+exports.DonationService = {
+    createDonationIntoDB,
+    getAllDonationsFromDB,
+    getUserDonationsFromDB,
+    getADonationIntoDB,
+    updateDonationIntoDB,
+    deleteDonationIntoDB,
 };

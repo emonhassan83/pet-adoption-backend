@@ -20,7 +20,7 @@ const user_service_1 = require("./user.service");
 const pick_1 = __importDefault(require("../../../shared/pick"));
 const user_constant_1 = require("./user.constant");
 const createUser = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield user_service_1.userService.createUser(req);
+    const result = yield user_service_1.userService.createUser(req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.CREATED,
         success: true,
@@ -41,8 +41,7 @@ const getAllFromDB = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield user_service_1.userService.getMyProfileFromDB(user);
+    const result = yield user_service_1.userService.getMyProfileFromDB(req === null || req === void 0 ? void 0 : req.user);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -51,9 +50,7 @@ const getMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, v
     });
 }));
 const updateMyProfile = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log(req.body);
-    const user = req === null || req === void 0 ? void 0 : req.user;
-    const result = yield user_service_1.userService.updateProfileIntoDB(user, req.body);
+    const result = yield user_service_1.userService.updateProfileIntoDB(req === null || req === void 0 ? void 0 : req.user, req.body);
     (0, sendResponse_1.default)(res, {
         statusCode: http_status_1.default.OK,
         success: true,
@@ -81,6 +78,16 @@ const changeProfileStatus = (0, catchAsync_1.default)((req, res) => __awaiter(vo
         data: result,
     });
 }));
+const softDelete = (0, catchAsync_1.default)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    const result = yield user_service_1.userService.softDelete(id);
+    (0, sendResponse_1.default)(res, {
+        statusCode: http_status_1.default.OK,
+        success: true,
+        message: "Users soft deleted successfully!",
+        data: result,
+    });
+}));
 exports.userController = {
     createUser,
     getAllFromDB,
@@ -88,4 +95,5 @@ exports.userController = {
     updateMyProfile,
     changeUserRole,
     changeProfileStatus,
+    softDelete
 };

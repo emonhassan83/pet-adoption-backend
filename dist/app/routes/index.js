@@ -8,6 +8,9 @@ const user_routes_1 = require("../modules/user/user.routes");
 const auth_routes_1 = require("../modules/auth/auth.routes");
 const pet_routes_1 = require("../modules/pet/pet.routes");
 const adoption_routes_1 = require("../modules/AdoptionRequest/adoption.routes");
+const blog_routes_1 = require("../modules/blog/blog.routes");
+const comment_routes_1 = require("../modules/comment/comment.routes");
+const donate_routes_1 = require("../modules/donate/donate.routes");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -25,6 +28,18 @@ const moduleRoutes = [
     {
         path: "/adoption-requests",
         route: adoption_routes_1.adoptionRequestRoutes,
+    },
+    {
+        path: "/blog",
+        route: blog_routes_1.blogRoutes,
+    },
+    {
+        path: "/comment",
+        route: comment_routes_1.commentRoutes,
+    },
+    {
+        path: "/donate",
+        route: donate_routes_1.donateRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

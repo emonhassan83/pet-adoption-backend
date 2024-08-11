@@ -23,12 +23,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PetService = void 0;
+exports.BlogService = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const pet_constant_1 = require("./pet.constant");
-const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0, function* () {
+const blog_constant_1 = require("./blog.constant");
+const createBlogIntoDB = (userData, blogData) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -36,18 +36,36 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    const result = yield prisma_1.default.pet.create({
-        data: petData,
+    const result = yield prisma_1.default.blog.create({
+        data: blogData,
     });
     return result;
 });
-const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const publishedBlogIntoDB = (userData, blogId) => __awaiter(void 0, void 0, void 0, function* () {
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userData === null || userData === void 0 ? void 0 : userData.userId,
+            isDeleted: false,
+            status: client_1.UserStatus.ACTIVE,
+        },
+    });
+    const result = yield prisma_1.default.blog.update({
+        where: {
+            id: blogId,
+        },
+        data: {
+            status: client_1.BlogStatus.PUBLISHED,
+        },
+    });
+    return result;
+});
+const getAllBlogsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: blog_constant_1.blogSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive",
@@ -66,7 +84,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, { depth: Infinity });
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.blog.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -75,14 +93,14 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
                 [options.sortBy]: options.sortOrder,
             }
             : {
-                createdAt: "asc",
+                publishedAt: "asc",
             },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            comment: true,
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.blog.count({
         where: whereConditions,
     });
     return {
@@ -94,20 +112,20 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         data: result,
     };
 });
-const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyBlogsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
     if (userData === null || userData === void 0 ? void 0 : userData.role) {
         andConditions.push({
-            user: {
+            author: {
                 id: userData.userId,
             },
         });
     }
     if (params.searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: blog_constant_1.blogSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: params.searchTerm,
                     mode: "insensitive",
@@ -126,7 +144,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, {depth: Infinity});
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.blog.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -135,14 +153,14 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
                 [options.sortBy]: options.sortOrder,
             }
             : {
-                createdAt: "asc",
+                publishedAt: "asc",
             },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            comment: true,
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.blog.count({
         where: whereConditions,
     });
     return {
@@ -154,7 +172,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
         data: result,
     };
 });
-const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getABlogIntoDB = (blogId, userData) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -162,23 +180,23 @@ const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, functi
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.blog.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: blogId,
         },
     });
-    const result = yield prisma_1.default.pet.findUnique({
+    const result = yield prisma_1.default.blog.findUnique({
         where: {
-            id: petId,
+            id: blogId,
         },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            comment: true,
         },
     });
     return result;
 });
-const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateBlogIntoDB = (userData, blogId, data) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -186,23 +204,24 @@ const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.blog.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: blogId,
         },
     });
-    const result = yield prisma_1.default.pet.update({
+    const result = yield prisma_1.default.blog.update({
         where: {
-            id: petId,
+            id: blogId,
         },
         data,
         include: {
-            user: true,
+            author: true,
+            comment: true,
         },
     });
     return result;
 });
-const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteBlogIntoDB = (userData, blogId) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -210,31 +229,32 @@ const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, func
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.blog.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: blogId,
         },
     });
     return yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
-        const deletePet = yield transactionClient.pet.delete({
+        const deleteBlog = yield prisma_1.default.blog.delete({
             where: {
-                id: petId,
+                id: blogId,
             },
         });
-        //* delete adoption request
-        yield transactionClient.adoptionRequest.deleteMany({
+        //* delete blog comment
+        yield transactionClient.comment.deleteMany({
             where: {
-                petId: petId,
+                blogId: blogId,
             },
         });
-        return deletePet;
+        return deleteBlog;
     }));
 });
-exports.PetService = {
-    createPetIntoDB,
-    getAllPetsFromDB,
-    getMyPetsFromDB,
-    getAIntoDB,
-    updateIntoDB,
-    deleteIntoDB,
+exports.BlogService = {
+    createBlogIntoDB,
+    publishedBlogIntoDB,
+    getAllBlogsFromDB,
+    getMyBlogsFromDB,
+    getABlogIntoDB,
+    updateBlogIntoDB,
+    deleteBlogIntoDB,
 };

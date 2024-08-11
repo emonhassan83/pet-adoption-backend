@@ -23,12 +23,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PetService = void 0;
+exports.CommentService = void 0;
 const client_1 = require("@prisma/client");
 const prisma_1 = __importDefault(require("../../../shared/prisma"));
 const paginationHelper_1 = require("../../../helpers/paginationHelper");
-const pet_constant_1 = require("./pet.constant");
-const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0, function* () {
+const comment_constant_1 = require("./comment.constant");
+const createCommentIntoDB = (userData, commentData) => __awaiter(void 0, void 0, void 0, function* () {
+    const { blogId, userId } = commentData;
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -36,18 +37,28 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    const result = yield prisma_1.default.pet.create({
-        data: petData,
+    yield prisma_1.default.blog.findUniqueOrThrow({
+        where: {
+            id: blogId,
+        },
+    });
+    yield prisma_1.default.user.findUniqueOrThrow({
+        where: {
+            id: userId,
+        },
+    });
+    const result = yield prisma_1.default.comment.create({
+        data: commentData,
     });
     return result;
 });
-const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
+const getAllCommentsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: comment_constant_1.commentSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: searchTerm,
                     mode: "insensitive",
@@ -66,7 +77,7 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, { depth: Infinity });
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.comment.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -78,11 +89,11 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
                 createdAt: "asc",
             },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            blog: true,
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.comment.count({
         where: whereConditions,
     });
     return {
@@ -94,20 +105,20 @@ const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, 
         data: result,
     };
 });
-const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getMyCommentsFromDB = (params, options, userData) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
     const andConditions = [];
     if (userData === null || userData === void 0 ? void 0 : userData.role) {
         andConditions.push({
-            user: {
+            author: {
                 id: userData.userId,
             },
         });
     }
     if (params.searchTerm) {
         andConditions.push({
-            OR: pet_constant_1.petSearchAbleFields.map((field) => ({
+            OR: comment_constant_1.commentSearchAbleFields.map((field) => ({
                 [field]: {
                     contains: params.searchTerm,
                     mode: "insensitive",
@@ -126,7 +137,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
     }
     const whereConditions = andConditions.length > 0 ? { AND: andConditions } : {};
     // console.dir(whereConditions, {depth: Infinity});
-    const result = yield prisma_1.default.pet.findMany({
+    const result = yield prisma_1.default.comment.findMany({
         where: whereConditions,
         skip,
         take: limit,
@@ -138,11 +149,11 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
                 createdAt: "asc",
             },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            blog: true,
         },
     });
-    const total = yield prisma_1.default.pet.count({
+    const total = yield prisma_1.default.comment.count({
         where: whereConditions,
     });
     return {
@@ -154,7 +165,7 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
         data: result,
     };
 });
-const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, function* () {
+const getACommentIntoDB = (commentId, userData) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -162,23 +173,23 @@ const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, functi
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.comment.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: commentId,
         },
     });
-    const result = yield prisma_1.default.pet.findUnique({
+    const result = yield prisma_1.default.comment.findUnique({
         where: {
-            id: petId,
+            id: commentId,
         },
         include: {
-            user: true,
-            adoptionRequest: true,
+            author: true,
+            blog: true,
         },
     });
     return result;
 });
-const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0, function* () {
+const updateCommentIntoDB = (userData, commentId, data) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -186,23 +197,24 @@ const updateIntoDB = (userData, petId, data) => __awaiter(void 0, void 0, void 0
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.comment.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: commentId,
         },
     });
-    const result = yield prisma_1.default.pet.update({
+    const result = yield prisma_1.default.comment.update({
         where: {
-            id: petId,
+            id: commentId,
         },
         data,
         include: {
-            user: true,
+            author: true,
+            blog: true,
         },
     });
     return result;
 });
-const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteCommentIntoDB = (userData, commentId) => __awaiter(void 0, void 0, void 0, function* () {
     yield prisma_1.default.user.findUniqueOrThrow({
         where: {
             id: userData === null || userData === void 0 ? void 0 : userData.userId,
@@ -210,31 +222,23 @@ const deleteIntoDB = (userData, petId) => __awaiter(void 0, void 0, void 0, func
             status: client_1.UserStatus.ACTIVE,
         },
     });
-    yield prisma_1.default.pet.findUniqueOrThrow({
+    yield prisma_1.default.comment.findUniqueOrThrow({
         where: {
-            id: petId,
+            id: commentId,
         },
     });
-    return yield prisma_1.default.$transaction((transactionClient) => __awaiter(void 0, void 0, void 0, function* () {
-        const deletePet = yield transactionClient.pet.delete({
-            where: {
-                id: petId,
-            },
-        });
-        //* delete adoption request
-        yield transactionClient.adoptionRequest.deleteMany({
-            where: {
-                petId: petId,
-            },
-        });
-        return deletePet;
-    }));
+    const result = yield prisma_1.default.comment.delete({
+        where: {
+            id: commentId,
+        },
+    });
+    return result;
 });
-exports.PetService = {
-    createPetIntoDB,
-    getAllPetsFromDB,
-    getMyPetsFromDB,
-    getAIntoDB,
-    updateIntoDB,
-    deleteIntoDB,
+exports.CommentService = {
+    createCommentIntoDB,
+    getAllCommentsFromDB,
+    getMyCommentsFromDB,
+    getACommentIntoDB,
+    updateCommentIntoDB,
+    deleteCommentIntoDB,
 };
