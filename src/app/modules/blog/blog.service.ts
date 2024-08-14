@@ -10,9 +10,7 @@ const createBlogIntoDB = async (
 ): Promise<Blog> => {
   await prisma.user.findUniqueOrThrow({
     where: {
-      id: userData?.userId,
-      isDeleted: false,
-      status: UserStatus.ACTIVE,
+      id: userData?.userId
     },
   });
 

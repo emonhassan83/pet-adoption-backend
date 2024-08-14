@@ -2,6 +2,9 @@ import { z } from "zod";
 
 const createBlogSchema = z.object({
   body: z.object({
+    userId: z.string({
+      required_error: "User id is required!",
+    }),
     title: z.string({
       required_error: "Blog title is required!",
     }),
@@ -17,15 +20,9 @@ const createBlogSchema = z.object({
     tags: z.array(z.string({
       required_error: "Blog tags is required!",
     })),
-    category: z.number({
+    category: z.string({
       required_error: "Blog category is required!",
-    }),
-    status: z.string({
-      required_error: "Blog status is required!",
-    }).optional(),
-    views: z.string({
-      required_error: "Blog views is required!",
-    }),
+    })
   }),
 });
 
@@ -52,7 +49,7 @@ const updateBlogSchema = z.object({
     status: z.string({
       required_error: "Blog status is required!",
     }).optional(),
-    views: z.string({
+    like: z.string({
       required_error: "Blog views is required!",
     }).optional(),
   }),
