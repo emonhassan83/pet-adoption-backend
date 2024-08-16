@@ -4,6 +4,9 @@ exports.blogValidation = void 0;
 const zod_1 = require("zod");
 const createBlogSchema = zod_1.z.object({
     body: zod_1.z.object({
+        userId: zod_1.z.string({
+            required_error: "User id is required!",
+        }),
         title: zod_1.z.string({
             required_error: "Blog title is required!",
         }),
@@ -19,15 +22,9 @@ const createBlogSchema = zod_1.z.object({
         tags: zod_1.z.array(zod_1.z.string({
             required_error: "Blog tags is required!",
         })),
-        category: zod_1.z.number({
+        category: zod_1.z.string({
             required_error: "Blog category is required!",
-        }),
-        status: zod_1.z.string({
-            required_error: "Blog status is required!",
-        }).optional(),
-        views: zod_1.z.string({
-            required_error: "Blog views is required!",
-        }),
+        })
     }),
 });
 const updateBlogSchema = zod_1.z.object({
@@ -53,7 +50,7 @@ const updateBlogSchema = zod_1.z.object({
         status: zod_1.z.string({
             required_error: "Blog status is required!",
         }).optional(),
-        views: zod_1.z.string({
+        like: zod_1.z.string({
             required_error: "Blog views is required!",
         }).optional(),
     }),

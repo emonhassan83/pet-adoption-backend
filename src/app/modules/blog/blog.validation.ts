@@ -43,13 +43,13 @@ const updateBlogSchema = z.object({
     tags: z.array(z.string({
       required_error: "Blog tags is required!",
     })).optional(),
-    category: z.number({
+    category: z.string({
       required_error: "Blog category is required!",
     }).optional(),
     status: z.string({
       required_error: "Blog status is required!",
     }).optional(),
-    like: z.string({
+    like: z.number({
       required_error: "Blog views is required!",
     }).optional(),
   }),
