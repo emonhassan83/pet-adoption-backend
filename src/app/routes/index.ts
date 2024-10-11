@@ -6,6 +6,7 @@ import { adoptionRequestRoutes } from "../modules/AdoptionRequest/adoption.route
 import { blogRoutes } from "../modules/blog/blog.routes";
 import { commentRoutes } from "../modules/comment/comment.routes";
 import { donateRoutes } from "../modules/donate/donate.routes";
+import { MetaRoutes } from "../modules/Meta/meta.routes";
 
 const router = express.Router();
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: "/donate",
     route: donateRoutes,
+  },
+  {
+    path: "/meta",
+    route: MetaRoutes,
   },
 ];
 
