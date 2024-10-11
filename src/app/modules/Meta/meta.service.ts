@@ -53,12 +53,14 @@ const getAdminMetaData = async () => {
   const blogCount = await prisma.blog.count();
   const donationCount = await prisma.donation.count();
 
-  // const totalRevenue = await prisma.payment.aggregate({
+  const totalRevenue = await prisma.adoptionRequest.count(
+  //   {
   //   _sum: { amount: true },
   //   where: {
   //     status: PaymentStatus.PAID,
   //   },
-  // });
+  // }
+) * 180;
 
   const barChartData = await getBarChartData();
   const pieCharData = await getPieChartData();
@@ -69,7 +71,7 @@ const getAdminMetaData = async () => {
     adoptionCount,
     blogCount,
     donationCount,
-    // totalRevenue,
+    totalRevenue,
     barChartData,
     pieCharData,
   };
@@ -128,18 +130,18 @@ const getBarChartData = async () => {
 };
 
 const getPieChartData = async () => {
-  // const appointmentStatusDistribution = await prisma.appointment.groupBy({
-  //   by: ["status"],
-  //   _count: { id: true },
-  // });
+  const adoptionStatusDistribution = await prisma.adoptionRequest.groupBy({
+    by: ["status"],
+    _count: { id: true },
+  });
 
-  // const formattedAppointmentStatusDistribution =
-  //   appointmentStatusDistribution.map(({ status, _count }) => ({
-  //     status,
-  //     count: Number(_count.id),
-  //   }));
+  const formattedAdoptStatusDistribution =
+  adoptionStatusDistribution.map(({ status, _count }) => ({
+      status,
+      count: Number(_count.id),
+    }));
 
-  // return formattedAppointmentStatusDistribution;
+  return formattedAdoptStatusDistribution;
 };
 
 export const MetaService = {
