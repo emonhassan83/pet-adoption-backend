@@ -47,8 +47,24 @@ const getSuperAdminMetaData = async () => {
 };
 
 const getAdminMetaData = async () => {
-  const userCount = await prisma.user.count();
+  const adminCount = await prisma.user.count({
+    where: {
+      role: "ADMIN"
+    }
+  });
+  const userCount = await prisma.user.count({
+    where: {
+      role: "USER"
+    }
+  });
   const petCount = await prisma.pet.count();
+  const popularPetCount = await prisma.pet.count({
+    where: {
+      adoptionRequest: {
+        some: {},
+      },
+    },
+  });
   const adoptionCount = await prisma.adoptionRequest.count();
   const blogCount = await prisma.blog.count();
   const donationCount = await prisma.donation.count();
@@ -67,7 +83,9 @@ const getAdminMetaData = async () => {
 
   return {
     userCount,
+    adminCount,
     petCount,
+    popularPetCount,
     adoptionCount,
     blogCount,
     donationCount,
