@@ -11,6 +11,7 @@ const adoption_routes_1 = require("../modules/AdoptionRequest/adoption.routes");
 const blog_routes_1 = require("../modules/blog/blog.routes");
 const comment_routes_1 = require("../modules/comment/comment.routes");
 const donate_routes_1 = require("../modules/donate/donate.routes");
+const meta_routes_1 = require("../modules/Meta/meta.routes");
 const router = express_1.default.Router();
 const moduleRoutes = [
     {
@@ -40,6 +41,10 @@ const moduleRoutes = [
     {
         path: "/donate",
         route: donate_routes_1.donateRoutes,
+    },
+    {
+        path: "/meta",
+        route: meta_routes_1.MetaRoutes,
     },
 ];
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
