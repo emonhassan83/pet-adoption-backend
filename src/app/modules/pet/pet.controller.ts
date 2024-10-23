@@ -21,7 +21,6 @@ const createPet = catchAsync(async (req, res) => {
 const getAllPets = catchAsync(async (req, res) => {  
     const filters = pick(req.query, petFilterableFields);
     const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
-  
     const result = await PetService.getAllPetsFromDB(filters, options);
   
     sendResponse(res, {

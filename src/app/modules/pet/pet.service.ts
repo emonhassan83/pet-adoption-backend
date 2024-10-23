@@ -24,6 +24,10 @@ const getAllPetsFromDB = async (params: any, options: IPaginationOptions) => {
   const { page, limit, skip } = paginationHelper.calculatePagination(options);
   const { searchTerm, ...filterData } = params;
 
+  if (filterData.age) {
+    filterData.age = Number(filterData.age);
+  }
+
   const andConditions: Prisma.PetWhereInput[] = [];
 
   if (searchTerm) {

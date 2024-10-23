@@ -5,7 +5,6 @@ export const petFilterableFields: string[] = [
   "breed",
   "age",
   "size",
-  "location",
   "color",
   "gender",
   "searchTerm",
