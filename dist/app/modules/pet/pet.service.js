@@ -44,6 +44,9 @@ const createPetIntoDB = (userData, petData) => __awaiter(void 0, void 0, void 0,
 const getAllPetsFromDB = (params, options) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, skip } = paginationHelper_1.paginationHelper.calculatePagination(options);
     const { searchTerm } = params, filterData = __rest(params, ["searchTerm"]);
+    if (filterData.age) {
+        filterData.age = Number(filterData.age);
+    }
     const andConditions = [];
     if (searchTerm) {
         andConditions.push({
