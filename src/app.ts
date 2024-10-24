@@ -6,8 +6,8 @@ import cookieParser from "cookie-parser";
 import notFound from "./app/middlewares/notFound";
 
 const app: Application = express();
-// const url = "https://pet-adoption-frontend-henna.vercel.app"
-const url = "http://localhost:3000"
+const url = "https://pet-adoption-frontend-henna.vercel.app"
+// const url = "http://localhost:3000"
 
 //* Middleware
 app.use(cors({origin: url, credentials: true}));

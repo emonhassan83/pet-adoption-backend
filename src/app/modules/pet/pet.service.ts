@@ -165,13 +165,13 @@ const getMyPetsFromDB = async (
 };
 
 const getAIntoDB = async (petId: string, userData: IUser) => {
-  await prisma.user.findUniqueOrThrow({
-    where: {
-      id: userData?.userId,
-      isDeleted: false,
-      status: UserStatus.ACTIVE,
-    },
-  });
+  // await prisma.user.findUniqueOrThrow({
+  //   where: {
+  //     id: userData?.userId,
+  //     isDeleted: false,
+  //     status: UserStatus.ACTIVE,
+  //   },
+  // });
 
   await prisma.pet.findUniqueOrThrow({
     where: {

@@ -158,13 +158,13 @@ const getMyPetsFromDB = (params, options, userData) => __awaiter(void 0, void 0,
     };
 });
 const getAIntoDB = (petId, userData) => __awaiter(void 0, void 0, void 0, function* () {
-    yield prisma_1.default.user.findUniqueOrThrow({
-        where: {
-            id: userData === null || userData === void 0 ? void 0 : userData.userId,
-            isDeleted: false,
-            status: client_1.UserStatus.ACTIVE,
-        },
-    });
+    // await prisma.user.findUniqueOrThrow({
+    //   where: {
+    //     id: userData?.userId,
+    //     isDeleted: false,
+    //     status: UserStatus.ACTIVE,
+    //   },
+    // });
     yield prisma_1.default.pet.findUniqueOrThrow({
         where: {
             id: petId,
