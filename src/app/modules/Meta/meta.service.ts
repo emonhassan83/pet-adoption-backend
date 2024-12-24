@@ -102,17 +102,19 @@ const getUserMetaData = async (user: IAuthUser) => {
     },
   });
 
-  const petCount = await prisma.pet.count({
-    where: {
-      userId: userData.id,
-    },
-  });
+  const petCount = await prisma.pet.count();
 
   const adoptionCount = await prisma.adoptionRequest.count({
     where: {
       userId: userData.id,
     },
   });
+
+  const totalRevenue = await prisma.adoptionRequest.count({
+    where: {
+      userId: userData.id,
+    },
+  }) * 180;
 
   const blogCount = await prisma.blog.count({
     where: {
@@ -131,6 +133,7 @@ const getUserMetaData = async (user: IAuthUser) => {
     adoptionCount,
     blogCount,
     donationCount,
+    totalRevenue
   };
 };
 
