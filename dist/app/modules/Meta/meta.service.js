@@ -103,16 +103,17 @@ const getUserMetaData = (user) => __awaiter(void 0, void 0, void 0, function* ()
             email: user === null || user === void 0 ? void 0 : user.email,
         },
     });
-    const petCount = yield prisma_1.default.pet.count({
-        where: {
-            userId: userData.id,
-        },
-    });
+    const petCount = yield prisma_1.default.pet.count();
     const adoptionCount = yield prisma_1.default.adoptionRequest.count({
         where: {
             userId: userData.id,
         },
     });
+    const totalRevenue = (yield prisma_1.default.adoptionRequest.count({
+        where: {
+            userId: userData.id,
+        },
+    })) * 180;
     const blogCount = yield prisma_1.default.blog.count({
         where: {
             userId: userData.id,
@@ -123,11 +124,16 @@ const getUserMetaData = (user) => __awaiter(void 0, void 0, void 0, function* ()
             userId: userData.id,
         },
     });
+    const barChartData = yield getUserBarChartData(userData === null || userData === void 0 ? void 0 : userData.id);
+    const pieCharData = yield getUserPieChartData(userData === null || userData === void 0 ? void 0 : userData.id);
     return {
         petCount,
         adoptionCount,
         blogCount,
         donationCount,
+        totalRevenue,
+        barChartData,
+        pieCharData
     };
 });
 const getBarChartData = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -144,6 +150,31 @@ const getPieChartData = () => __awaiter(void 0, void 0, void 0, function* () {
     const adoptionStatusDistribution = yield prisma_1.default.adoptionRequest.groupBy({
         by: ["status"],
         _count: { id: true },
+    });
+    const formattedAdoptStatusDistribution = adoptionStatusDistribution.map(({ status, _count }) => ({
+        status,
+        count: Number(_count.id),
+    }));
+    return formattedAdoptStatusDistribution;
+});
+const getUserBarChartData = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const adoptionCountByMonth = yield prisma_1.default.$queryRaw `
+        SELECT DATE_TRUNC('month', "createdAt") AS month,
+        CAST(COUNT(*) AS INTEGER) AS count
+        FROM "adoptionrequests"
+        WHERE "userId" = ${userId}
+        GROUP BY month
+        ORDER BY month ASC
+    `;
+    return adoptionCountByMonth;
+});
+const getUserPieChartData = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const adoptionStatusDistribution = yield prisma_1.default.adoptionRequest.groupBy({
+        by: ["status"],
+        _count: { id: true },
+        where: {
+            userId,
+        },
     });
     const formattedAdoptStatusDistribution = adoptionStatusDistribution.map(({ status, _count }) => ({
         status,

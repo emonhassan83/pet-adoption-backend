@@ -128,12 +128,17 @@ const getUserMetaData = async (user: IAuthUser) => {
     },
   });
 
+  const barChartData = await getUserBarChartData(userData?.id);
+  const pieCharData = await getUserPieChartData(userData?.id);
+
   return {
     petCount,
     adoptionCount,
     blogCount,
     donationCount,
-    totalRevenue
+    totalRevenue,
+    barChartData,
+    pieCharData
   };
 };
 
@@ -154,6 +159,38 @@ const getPieChartData = async () => {
   const adoptionStatusDistribution = await prisma.adoptionRequest.groupBy({
     by: ["status"],
     _count: { id: true },
+  });
+
+  const formattedAdoptStatusDistribution =
+  adoptionStatusDistribution.map(({ status, _count }) => ({
+      status,
+      count: Number(_count.id),
+    }));
+
+  return formattedAdoptStatusDistribution;
+};
+
+const getUserBarChartData = async (userId: string) => {
+  const adoptionCountByMonth: { month: Date; count: bigint }[] =
+    await prisma.$queryRaw`
+        SELECT DATE_TRUNC('month', "createdAt") AS month,
+        CAST(COUNT(*) AS INTEGER) AS count
+        FROM "adoptionrequests"
+        WHERE "userId" = ${userId}
+        GROUP BY month
+        ORDER BY month ASC
+    `;
+
+  return adoptionCountByMonth;
+};
+
+const getUserPieChartData = async (userId: string) => {
+  const adoptionStatusDistribution = await prisma.adoptionRequest.groupBy({
+    by: ["status"],
+    _count: { id: true },
+    where: {
+      userId,
+    },
   });
 
   const formattedAdoptStatusDistribution =
