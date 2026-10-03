@@ -6,9 +6,9 @@
   "scripts": {
     "postinstall": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts"
+    "build": "node api.js && tsc",
+    "start": "node api.js && node dist/server.js",
+    "dev": "node api.js && ts-node-dev --respawn --transpile-only src/server.ts"
   },
   "keywords": [],
   "author": "",
@@ -35,7 +35,7 @@
     "express": "^4.22.2",
     "http-status": "^1.7.4",
     "jsonwebtoken": "^9.0.2",
-    "nodemailer": "^8.0.5",
+    "nodemailer": "^10.0.9",
     "zod": "^3.22.4"
   }
 }
